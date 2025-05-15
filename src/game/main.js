@@ -9,10 +9,11 @@ import { AUTO, Game } from 'phaser';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config = {
     type: AUTO,
-    width: 10920,
+    width: 1920,
     height: 1080,
     parent: 'game-container',
     backgroundColor: '#028af8',
+    roundPixels: true, //important for pi
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -28,6 +29,16 @@ const config = {
         target: 30,         // Limit to 30 FPS
         forceSetTimeOut: true  // Use setTimeout instead of requestAnimationFrame (important for strict limiting)
     },
+    render: {
+        antialias: false,
+        roundPixels: true,
+        maxTextures: 4,
+        batchSize: 4096,
+        clearBeforeRender: true,
+        powerPreference: 'low-power',
+        failIfMajorPerformanceCaveat: false,
+    }
+
 };
 
 const StartGame = (parent) => {
