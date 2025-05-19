@@ -8,7 +8,7 @@ import { AUTO, Game } from 'phaser';
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config = {
-    type: AUTO,
+    type: Phaser.WEBGL,
     width: 1280,
     height: 720,
     parent: 'game-container',
@@ -20,12 +20,6 @@ const config = {
         width: 1920,
         height: 1080
     },
-    physics: {
-        default: 'arcade',
-        arcade: {
-            debug: false
-        }
-    },
     scene: [
         Boot,
         Preloader,
@@ -34,7 +28,7 @@ const config = {
         GameOver
     ],
     fps: {
-        target: 20,         // Limit to 20 FPS
+        target: 16,         // Limit to 20 FPS
         forceSetTimeOut: true  // Use setTimeout instead of requestAnimationFrame (important for strict limiting)
     },
     render: {
