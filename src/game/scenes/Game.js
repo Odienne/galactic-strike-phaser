@@ -11,6 +11,10 @@ export class Game extends Phaser.Scene {
         super('Game');
     }
 
+    preload() {
+        this.load.image('bg', 'assets/bg.png');
+    }
+
     createGrid() {
         const cols = 10;
         const rows = 10;
@@ -164,9 +168,14 @@ export class Game extends Phaser.Scene {
         }
     }
 
+    addBackground() {
+        const bg = this.add.image(0, 0, 'bg')
+            .setOrigin(0, 0)
+            .setDisplaySize(this.scale.width, this.scale.height);    }
+
     create() {
 
-        this.addVideo();
+        this.addBackground();
         this.createGrid();
         this.animateHighlights();
         this.addViewfinder();

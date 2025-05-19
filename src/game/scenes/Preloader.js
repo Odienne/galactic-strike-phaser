@@ -42,7 +42,7 @@ export class Preloader extends Scene
         this.load.audio('missileSound', 'missile-launch.mp3');
         this.load.audio('explosionSound', 'explosion.mp3');
 
-        this.load.video('bgVideo', 'bg.mp4', true);
+        // this.load.video('bgVideo', 'bg.mp4', true);
     }
 
     create ()
