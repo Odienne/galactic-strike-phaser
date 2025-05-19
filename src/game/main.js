@@ -9,14 +9,16 @@ import { AUTO, Game } from 'phaser';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config = {
     type: AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 1280,
+    height: 720,
     parent: 'game-container',
     backgroundColor: '#028af8',
     // roundPixels: true, //important for pi
     scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 1920,
+        height: 1080
     },
     physics: {
         default: 'arcade',
@@ -32,7 +34,7 @@ const config = {
         GameOver
     ],
     fps: {
-        target: 24,         // Limit to 30 FPS
+        target: 20,         // Limit to 20 FPS
         forceSetTimeOut: true  // Use setTimeout instead of requestAnimationFrame (important for strict limiting)
     },
     render: {

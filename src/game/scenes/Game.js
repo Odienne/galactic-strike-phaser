@@ -18,8 +18,8 @@ export class Game extends Phaser.Scene {
         this.load.image('bg', 'assets/bg.png');
         this.load.image('missile', 'assets/missile.png');
 
-        this.load.audio('missileSound', 'assets/sfx/01-fire.mp3');
-        this.load.audio('explosionSound', 'assets/sfx/04-ship_explosion.mp3');
+        // this.load.audio('missileSound', 'assets/sfx/01-fire.mp3');
+        // this.load.audio('explosionSound', 'assets/sfx/04-ship_explosion.mp3');
 
         this.load.spritesheet('explosion', 'assets/explosion.png', {
             frameWidth: 64,
@@ -190,7 +190,6 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
-
         this.weaponListeners();
         this.addBackground();
         this.createGrid();
@@ -198,8 +197,8 @@ export class Game extends Phaser.Scene {
         this.addViewfinder();
 
         // Set up sounds
-        this.missileSound = this.sound.add('missileSound');
-        this.explosionSound = this.sound.add('explosionSound');
+        // this.missileSound = this.sound.add('missileSound');
+        // this.explosionSound = this.sound.add('explosionSound');
 
 
         // Explosion animation
@@ -276,7 +275,7 @@ export class Game extends Phaser.Scene {
                     const angleRad = Phaser.Math.Angle.Between(startX, startY, target.x, target.y);
                     missile.setRotation(angleRad);
 
-                    if (index === 0) this.missileSound.play();
+                    // if (index === 0) this.missileSound.play();
 
                     const distance = Phaser.Math.Distance.Between(startX, startY, target.x, target.y);
                     const speed = 1200;
@@ -289,7 +288,7 @@ export class Game extends Phaser.Scene {
                         duration,
                         ease: 'Linear',
                         onComplete: () => {
-                            if (index === 0) this.explosionSound.play();
+                            // if (index === 0) this.explosionSound.play();
 
                             const explosion = this.add.sprite(target.x, target.y, 'explosion')
                                 .setDepth(20)
@@ -336,7 +335,7 @@ export class Game extends Phaser.Scene {
                     const angleRad = Phaser.Math.Angle.Between(startX, startY, target.x, target.y);
                     missile.setRotation(angleRad);
 
-                    if (index === 0) this.missileSound.play();
+                    // if (index === 0) this.missileSound.play();
 
                     const distance = Phaser.Math.Distance.Between(startX, startY, target.x, target.y);
                     const speed = 1200;
@@ -349,7 +348,7 @@ export class Game extends Phaser.Scene {
                         duration,
                         ease: 'Linear',
                         onComplete: () => {
-                            if (index === 0) this.explosionSound.play();
+                            // if (index === 0) this.explosionSound.play();
 
                             const explosion = this.add.sprite(target.x, target.y, 'explosion')
                                 .setDepth(20)
@@ -390,7 +389,7 @@ export class Game extends Phaser.Scene {
         this.missile.setRotation(angleRad);
 
         // Play missile sound
-        this.missileSound.play();
+        // this.missileSound.play();
 
         // Move to target
         const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
@@ -405,11 +404,14 @@ export class Game extends Phaser.Scene {
             ease: 'Linear',
             onComplete: () => {
                 // Play explosion sound
-                this.explosionSound.play();
+                // this.explosionSound.play();
 
                 // Play explosion animation
                 const explosion = this.add.sprite(targetX, targetY, 'explosion').setDepth(20).setScale(1.6);
                 explosion.play('explode');
+                explosion.on('animationcomplete', () => {
+                    explosion.destroy();
+                });
 
                 // Clean up
                 this.missile?.destroy();
