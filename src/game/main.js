@@ -40,7 +40,6 @@ const config = {
         powerPreference: 'low-power',
         failIfMajorPerformanceCaveat: false,
     }
-
 };
 
 const StartGame = (parent) => {
