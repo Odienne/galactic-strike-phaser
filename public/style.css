@@ -21,3 +21,9 @@ html, body, #game-container {
     padding: 0;
     overflow: hidden;
 }
+
+canvas {
+    width: 100% !important;  /* Scale canvas to container size */
+    height: 100% !important;
+    image-rendering: pixelated; /* Optional: better pixelated scaling */
+}
