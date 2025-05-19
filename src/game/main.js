@@ -13,7 +13,7 @@ const config = {
     height: window.innerHeight,
     parent: 'game-container',
     backgroundColor: '#028af8',
-    roundPixels: true, //important for pi
+    // roundPixels: true, //important for pi
     scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH

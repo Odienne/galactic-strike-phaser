@@ -51,36 +51,39 @@ export class Game extends Phaser.Scene {
         this.rowHighlight = this.add.rectangle(0, 0, this.scale.width, cellHeight, 0xff0000, 0.2).setOrigin(0, 0.5);
         this.colHighlight = this.add.rectangle(0, 0, cellWidth, this.scale.height, 0x0000ff, 0.2).setOrigin(0.5, 0);
 
+        this.rowHighlight.y = this.cellHeight / 2;
+        this.colHighlight.x = this.cellWidth / 2;
+
         // Add input keys
         let rowTween;
         let colTween;
 
 // Animate row
         const startRowTween = () => {
+            const goingDown = this.rowHighlight.y < this.scale.height / 2;
             rowTween = this.tweens.add({
                 targets: this.rowHighlight,
                 y: {
                     from: this.rowHighlight.y,
-                    to: this.rowHighlight.y === this.scale.height - cellHeight / 2
-                        ? cellHeight / 2
-                        : this.scale.height - cellHeight / 2
+                    to: goingDown
+                        ? this.scale.height - cellHeight / 2
+                        : cellHeight / 2
                 },
                 duration: 2000,
                 ease: 'Sine.easeInOut',
                 yoyo: true,
                 repeat: -1
             });
-        };
-
-// Animate column
+        };// Animate column
         const startColTween = () => {
+            const goingRight = this.colHighlight.x < this.scale.width / 2;
             colTween = this.tweens.add({
                 targets: this.colHighlight,
                 x: {
                     from: this.colHighlight.x,
-                    to: this.colHighlight.x === this.scale.width - cellWidth / 2
-                        ? cellWidth / 2
-                        : this.scale.width - cellWidth / 2
+                    to: goingRight
+                        ? this.scale.width - cellWidth / 2
+                        : cellWidth / 2
                 },
                 duration: 2000,
                 ease: 'Sine.easeInOut',
@@ -88,7 +91,6 @@ export class Game extends Phaser.Scene {
                 repeat: -1
             });
         };
-
         const snapToNearestRow = () => {
             const relativeY = this.rowHighlight.y;
             let snappedRow = Math.round(relativeY / cellHeight);
@@ -114,7 +116,7 @@ export class Game extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keyup-Q', () => {
-            rowTween.stop();
+            rowTween.remove();
             startRowTween(); // resume from snapped position
         });
 
@@ -125,7 +127,7 @@ export class Game extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keyup-D', () => {
-            colTween.stop();
+            colTween.remove();
             startColTween(); // resume from snapped position
         });
     }
@@ -214,7 +216,7 @@ export class Game extends Phaser.Scene {
 
             // Move to target
             const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-            const speed = 300; // px/sec
+            const speed = 1200; // px/sec
             const duration = (distance / speed) * 1000;
 
             this.tweens.add({
