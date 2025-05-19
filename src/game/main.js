@@ -9,10 +9,10 @@ import { AUTO, Game } from 'phaser';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config = {
     type: Phaser.WEBGL,
-    width: 1280,
-    height: 720,
+    width: 720,
+    height: 480,
     parent: 'game-container',
-    backgroundColor: '#028af8',
+    // backgroundColor: '#028af8',
     // roundPixels: true, //important for pi
     scale: {
         mode: Phaser.Scale.FIT,
@@ -39,6 +39,7 @@ const config = {
         clearBeforeRender: true,
         powerPreference: 'low-power',
         failIfMajorPerformanceCaveat: false,
+        transparent: false
     }
 };
 
