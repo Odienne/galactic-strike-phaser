@@ -7,12 +7,25 @@ export class Game extends Phaser.Scene {
     missileSound;
     explosionSound;
 
+    currentWeapon = 1;
+
+
     constructor() {
         super('Game');
     }
 
     preload() {
         this.load.image('bg', 'assets/bg.png');
+        this.load.image('missile', 'assets/missile.png');
+
+        this.load.audio('missileSound', 'assets/sfx/01-fire.mp3');
+        this.load.audio('explosionSound', 'assets/sfx/04-ship_explosion.mp3');
+
+        this.load.spritesheet('explosion', 'assets/explosion.png', {
+            frameWidth: 64,
+            frameHeight: 64,
+            endFrame: 23,
+        });
     }
 
     createGrid() {
@@ -69,7 +82,7 @@ export class Game extends Phaser.Scene {
                         ? this.scale.height - cellHeight / 2
                         : cellHeight / 2
                 },
-                duration: 2000,
+                duration: 4000,
                 ease: 'Sine.easeInOut',
                 yoyo: true,
                 repeat: -1
@@ -85,7 +98,7 @@ export class Game extends Phaser.Scene {
                         ? this.scale.width - cellWidth / 2
                         : cellWidth / 2
                 },
-                duration: 2000,
+                duration: 4000,
                 ease: 'Sine.easeInOut',
                 yoyo: true,
                 repeat: -1
@@ -173,10 +186,12 @@ export class Game extends Phaser.Scene {
     addBackground() {
         const bg = this.add.image(0, 0, 'bg')
             .setOrigin(0, 0)
-            .setDisplaySize(this.scale.width, this.scale.height);    }
+            .setDisplaySize(this.scale.width, this.scale.height);
+    }
 
     create() {
 
+        this.weaponListeners();
         this.addBackground();
         this.createGrid();
         this.animateHighlights();
@@ -186,59 +201,16 @@ export class Game extends Phaser.Scene {
         this.missileSound = this.sound.add('missileSound');
         this.explosionSound = this.sound.add('explosionSound');
 
+
         // Explosion animation
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', {start: 0, end: 23, first: 23}),
             frameRate: 20,
-            hideOnComplete: true
+            hideOnComplete: true,
         });
 
-        // Launch missile on S
-        this.input.keyboard.on('keydown-S', () => {
-            if (this.missile) return; // Prevent refiring
-
-            const startX = this.cameras.main.centerX;
-            const startY = this.cameras.main.height;
-
-            const targetX = this.colHighlight.x;
-            const targetY = this.rowHighlight.y;
-
-            // Create missile
-            this.missile = this.add.sprite(startX, startY, 'missile').setDepth(10);
-
-            // Rotate to face target
-            const angleRad = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
-            this.missile.setRotation(angleRad);
-
-            // Play missile sound
-            this.missileSound.play();
-
-            // Move to target
-            const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-            const speed = 1200; // px/sec
-            const duration = (distance / speed) * 1000;
-
-            this.tweens.add({
-                targets: this.missile,
-                x: targetX,
-                y: targetY,
-                duration,
-                ease: 'Linear',
-                onComplete: () => {
-                    // Play explosion sound
-                    this.explosionSound.play();
-
-                    // Play explosion animation
-                    const explosion = this.add.sprite(targetX, targetY, 'explosion').setDepth(20);
-                    explosion.play('explode');
-
-                    // Clean up
-                    this.missile?.destroy();
-                    this.missile = null;
-                }
-            });
-        });
+        this.manageFire();
 
         this.allowFullscreen();
     }
@@ -257,5 +229,192 @@ export class Game extends Phaser.Scene {
         if (this.viewfinder && this.colHighlight && this.rowHighlight) {
             this.viewfinder.setPosition(this.colHighlight.x, this.rowHighlight.y);
         }
+    }
+
+    weaponListeners() {
+        // Weapon switching
+        this.input.keyboard.on('keydown-ONE', () => {
+            this.currentWeapon = 1;
+            console.log('Switched to weapon 1');
+        });
+        this.input.keyboard.on('keydown-TWO', () => {
+            this.currentWeapon = 2;
+            console.log('Switched to weapon 2');
+        });
+        this.input.keyboard.on('keydown-THREE', () => {
+            this.currentWeapon = 3;
+            console.log('Switched to weapon 3');
+        });
+    }
+
+    manageFire() {
+        this.input.keyboard.on('keydown-S', () => {
+            if (this.currentWeapon === 1) {
+                this.fireMissile();
+            }
+            else if (this.currentWeapon === 2) {
+                if (this.missile) return;  // Prevent refiring if missiles still active
+
+                const startX = this.cameras.main.centerX;
+                const startY = this.cameras.main.height;
+
+                const centerX = this.colHighlight.x;
+                const rowY = this.rowHighlight.y;
+
+                const spacing = this.cellWidth;  // Use cellWidth for horizontal spacing
+
+                const targets = [
+                    { x: centerX - spacing, y: rowY },  // Left cell
+                    { x: centerX, y: rowY },            // Center cell
+                    { x: centerX + spacing, y: rowY }   // Right cell
+                ];
+
+                this.missile = [];
+
+                targets.forEach((target, index) => {
+                    const missile = this.add.sprite(startX, startY, 'missile').setDepth(10);
+                    const angleRad = Phaser.Math.Angle.Between(startX, startY, target.x, target.y);
+                    missile.setRotation(angleRad);
+
+                    if (index === 0) this.missileSound.play();
+
+                    const distance = Phaser.Math.Distance.Between(startX, startY, target.x, target.y);
+                    const speed = 1200;
+                    const duration = (distance / speed) * 1000;
+
+                    this.tweens.add({
+                        targets: missile,
+                        x: target.x,
+                        y: target.y,
+                        duration,
+                        ease: 'Linear',
+                        onComplete: () => {
+                            if (index === 0) this.explosionSound.play();
+
+                            const explosion = this.add.sprite(target.x, target.y, 'explosion')
+                                .setDepth(20)
+                                .setScale(1.6);
+                            explosion.play('explode');
+
+                            missile.destroy();
+                            this.missile[index] = null;
+
+                            if (this.missile.every(m => m === null)) {
+                                this.missile = null;
+                            }
+                        }
+                    });
+
+                    this.missile.push(missile);
+                });
+            }
+            else if (this.currentWeapon === 3) {
+                if (this.missile) return; // Prevent refiring if missiles still active
+
+                const startX = this.cameras.main.centerX;
+                const startY = this.cameras.main.height;
+
+                const centerX = this.colHighlight.x;
+                const centerY = this.rowHighlight.y;
+
+                const spacingX = this.cellWidth;
+                const spacingY = this.cellHeight;
+
+                // Positions in X shape (center + diagonals)
+                const targets = [
+                    { x: centerX, y: centerY },  // Center
+                    { x: centerX - spacingX, y: centerY - spacingY }, // Top-left
+                    { x: centerX + spacingX, y: centerY - spacingY }, // Top-right
+                    { x: centerX - spacingX, y: centerY + spacingY }, // Bottom-left
+                    { x: centerX + spacingX, y: centerY + spacingY }  // Bottom-right
+                ];
+
+                this.missile = [];
+
+                targets.forEach((target, index) => {
+                    const missile = this.add.sprite(startX, startY, 'missile').setDepth(10);
+                    const angleRad = Phaser.Math.Angle.Between(startX, startY, target.x, target.y);
+                    missile.setRotation(angleRad);
+
+                    if (index === 0) this.missileSound.play();
+
+                    const distance = Phaser.Math.Distance.Between(startX, startY, target.x, target.y);
+                    const speed = 1200;
+                    const duration = (distance / speed) * 1000;
+
+                    this.tweens.add({
+                        targets: missile,
+                        x: target.x,
+                        y: target.y,
+                        duration,
+                        ease: 'Linear',
+                        onComplete: () => {
+                            if (index === 0) this.explosionSound.play();
+
+                            const explosion = this.add.sprite(target.x, target.y, 'explosion')
+                                .setDepth(20)
+                                .setScale(1.6);
+                            explosion.play('explode');
+
+                            missile.destroy();
+                            this.missile[index] = null;
+
+                            if (this.missile.every(m => m === null)) {
+                                this.missile = null;
+                            }
+                        }
+                    });
+
+                    this.missile.push(missile);
+                });
+            }
+
+
+        });
+    }
+
+    fireMissile() {
+        if (this.missile) return; // Prevent refiring
+
+        const startX = this.cameras.main.centerX;
+        const startY = this.cameras.main.height;
+
+        const targetX = this.colHighlight.x;
+        const targetY = this.rowHighlight.y;
+
+        // Create missile
+        this.missile = this.add.sprite(startX, startY, 'missile').setDepth(10);
+
+        // Rotate to face target
+        const angleRad = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
+        this.missile.setRotation(angleRad);
+
+        // Play missile sound
+        this.missileSound.play();
+
+        // Move to target
+        const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
+        const speed = 1200; // px/sec
+        const duration = (distance / speed) * 1000;
+
+        this.tweens.add({
+            targets: this.missile,
+            x: targetX,
+            y: targetY,
+            duration,
+            ease: 'Linear',
+            onComplete: () => {
+                // Play explosion sound
+                this.explosionSound.play();
+
+                // Play explosion animation
+                const explosion = this.add.sprite(targetX, targetY, 'explosion').setDepth(20).setScale(1.6);
+                explosion.play('explode');
+
+                // Clean up
+                this.missile?.destroy();
+                this.missile = null;
+            }
+        });
     }
 }

@@ -33,14 +33,8 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('logo', 'logo.png');
-        this.load.image('missile', 'missile.png');
-        this.load.spritesheet('explosion', 'explosion.png', {
-            frameWidth: 64,
-            frameHeight: 64,
-            endFrame: 23
-        });
-        this.load.audio('missileSound', 'missile-launch.mp3');
-        this.load.audio('explosionSound', 'explosion.mp3');
+
+
 
         // this.load.video('bgVideo', 'bg.mp4', true);
     }
