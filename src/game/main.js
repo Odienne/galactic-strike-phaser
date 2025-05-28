@@ -1,7 +1,7 @@
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
-import { MainMenu } from './scenes/MainMenu';
+import { IntroScene } from './scenes/IntroScene.js';
 import { Preloader } from './scenes/Preloader';
 import { AUTO, Game } from 'phaser';
 
@@ -23,7 +23,7 @@ const config = {
     scene: [
         Boot,
         Preloader,
-        MainMenu,
+        IntroScene,
         MainGame,
         GameOver
     ],
@@ -35,7 +35,7 @@ const config = {
         antialias: true,
         roundPixels: false,
         maxTextures: 20,
-        batchSize: 8096,
+        batchSize: 4096,
         clearBeforeRender: true,
         failIfMajorPerformanceCaveat: false,
         transparent: false

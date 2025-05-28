@@ -16,6 +16,9 @@ export class Game extends Phaser.Scene {
         this.load.image('uiOverlay', 'assets/ui-overlay.png');
         this.load.image('viewfinder', 'assets/viewfinder.png');
         this.load.image('bgFallback', 'assets/bg.png');
+        this.load.image('laser', 'assets/laser.png');
+        this.load.image('laser2', 'assets/laser2.png');
+        this.load.image('laser3', 'assets/laser3.png');
         this.load.image('missile', 'assets/missile.png');
         this.load.video('bgVideo', 'assets/bg_video.mp4', true);
         this.load.spritesheet('explosion', 'assets/explosion3.png', {

@@ -3,15 +3,11 @@ export class WeaponSystem {
         this.scene = scene;
         this.grid = grid;
         this.currentWeapon = 1;
-        this.missiles = [];
 
-        this.setupListeners();
-
-        this.laser = this.scene.add.graphics();
-        this.laser.setDepth(11);
+        this.setupInput();
     }
 
-    setupListeners() {
+    setupInput() {
         ['ONE', 'TWO', 'THREE'].forEach((key, i) => {
             this.scene.input.keyboard.on(`keydown-${key}`, () => {
                 this.currentWeapon = i + 1;
@@ -19,131 +15,152 @@ export class WeaponSystem {
             });
         });
 
-        this.scene.input.keyboard.on('keydown-S', () => this.fire());
-
-        this.scene.input.keyboard.on('keydown-SPACE', () => {
-            const targetX = this.grid.colHighlight.x;
-            const targetY = this.grid.rowHighlight.y;
-            this.fireLaserProjectile(targetX, targetY);
-        });
+        this.scene.input.keyboard.on('keydown-SPACE', () => this.fire());
     }
 
     fire() {
-        if (this.missiles.length > 0) return;  // already firing
-
-        const startX = this.scene.cameras.main.centerX;
-        const startY = this.scene.cameras.main.height;
         const centerX = this.grid.colHighlight.x;
         const centerY = this.grid.rowHighlight.y;
         const spacingX = this.grid.cellWidth;
         const spacingY = this.grid.cellHeight;
 
-        let targets = [];
+        const startX = this.scene.scale.width / 2;
+        const startY = this.scene.scale.height;
 
+        let targets = [];
+        let laserTexture = 'laser';
+        const bottomY = this.scene?.scale?.height ?? 1080;
+
+        //margin right 27px
         switch (this.currentWeapon) {
             case 1:
-                targets = [{ x: centerX, y: centerY }];
-                break;
-            case 2:
+                laserTexture = 'laser';
                 targets = [
-                    { x: centerX - spacingX, y: centerY },
-                    { x: centerX, y: centerY },
-                    { x: centerX + spacingX, y: centerY }
+                    {
+                        startX: (1920/2)+225,
+                        startY: bottomY,
+                        targetX: centerX,
+                        targetY: centerY
+                    }
+                ];
+                break;
+
+            case 2:
+                laserTexture = 'laser2';
+
+                targets = [
+                    {
+                        startX: 550,
+                        startY: bottomY,
+                        targetX: centerX - spacingX,
+                        targetY: centerY
+                    },
+                    {
+                        startX: (1920/2)+225,
+                        startY: bottomY,
+                        targetX: centerX,
+                        targetY: centerY
+                    },
+                    {
+                        startX: 1920,
+                        startY: bottomY,
+                        targetX: centerX + spacingX,
+                        targetY: centerY
+                    }
                 ];
                 break;
             case 3:
+                laserTexture = 'laser3';
                 targets = [
-                    { x: centerX, y: centerY },
-                    { x: centerX - spacingX, y: centerY - spacingY },
-                    { x: centerX + spacingX, y: centerY - spacingY },
-                    { x: centerX - spacingX, y: centerY + spacingY },
-                    { x: centerX + spacingX, y: centerY + spacingY }
+                    {
+                        startX: (1920/2)+225,
+                        startY: bottomY,
+                        targetX: centerX,
+                        targetY: centerY
+                    },
+                    {
+                        startX: 550,
+                        startY: bottomY,
+                        targetX: centerX - spacingX, targetY: centerY - spacingY
+                    },
+                    {
+                        startX: 1920,
+                        startY: bottomY,
+                        targetX: centerX + spacingX, targetY: centerY - spacingY
+                    },
+                    {
+                        startX: (1920/2)-150,
+                        startY: bottomY,
+                        targetX: centerX - spacingX, targetY: centerY + spacingY
+                    },
+                    {
+                        startX: (1920/2)+550,
+                        startY: bottomY,
+                        targetX: centerX + spacingX, targetY: centerY + spacingY
+                    },
                 ];
                 break;
         }
 
-        this.missiles = [];
-
         targets.forEach(target => {
-            const missile = this.launchMissile(startX, startY, target.x, target.y);
-            this.missiles.push(missile);
+            const sx = target.startX;
+            const sy = target.startY;
+            const tx = target.targetX;
+            const ty = target.targetY;
+
+            this.fireLaser(sx, sy, tx, ty, laserTexture);
         });
     }
 
-    launchMissile(startX, startY, targetX, targetY) {
-        const missile = this.scene.add.sprite(startX, startY, 'missile').setDepth(10);
-        const angleRad = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
-        missile.setRotation(angleRad);
+    fireLaser(startX, startY, targetX, targetY, texture) {
+        console.log(startX, startY, targetX, targetY, texture)
+        const laser = this.scene.add.sprite(startX, startY, texture)
+            .setDepth(10)
+            .setBlendMode(Phaser.BlendModes.ADD);
 
-        const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
-        const speed = 1200;
-        const duration = (distance / speed) * 1000;
-
-        this.scene.tweens.add({
-            targets: missile,
-            x: targetX,
-            y: targetY,
-            duration,
-            ease: 'Linear',
-            onComplete: () => {
-                const hit = this.grid.fireAtCell(targetX, targetY);
-                if(hit) {
-                    this.showExplosion(targetX, targetY);
-                } else {
-                }
-
-                missile.destroy();
-
-                // Remove this missile from missiles array
-                const index = this.missiles.indexOf(missile);
-                if (index !== -1) {
-                    this.missiles.splice(index, 1);
-                }
-            }
-        });
-
-        return missile;
-    }
-
-    fireLaserProjectile(targetX, targetY) {
-        const startX = this.scene.scale.width / 2;
-        const startY = this.scene.scale.height;
-
-        // Create laser graphic
-        const laser = this.scene.add.rectangle(startX, startY, 8, 40, 0xff0000)
-            .setOrigin(0.5, 1)
-            .setDepth(10);
-
-        laser.setBlendMode(Phaser.BlendModes.ADD);
+        switch (this.currentWeapon) {
+            case 1:
+                laser.setOrigin(0.5, 0.2)
+                break;
+            case 2:
+                laser.setOrigin(0.5, 0.4)
+                break;
+            case 3:
+                laser.setOrigin(0.5, 0.2)
+                break;
+        }
 
         this.scene.tweens.add({
             targets: laser,
-            width: { from: 8, to: 12 },
+            scaleX: {from: 1, to: 1.6},
             duration: 100,
             yoyo: true,
             repeat: -1
         });
 
-        // Calculate angle to target
         const angle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
         laser.rotation = angle + Math.PI / 2;
 
-        const speed = 800;
-        const distance = Phaser.Math.Distance.Between(startX, startY, targetX, targetY);
+        // const laserHeight = (laser.displayHeight || 40) - 24;
+        // const offsetX = laserHeight * Math.cos(angle);
+        // const offsetY = laserHeight * Math.sin(angle);
+        const adjustedTargetX = targetX;
+        const adjustedTargetY = targetY;
+
+        const speed = 1600;
+        const distance = Phaser.Math.Distance.Between(startX, startY, adjustedTargetX, adjustedTargetY);
         const duration = (distance / speed) * 1000;
 
         this.scene.tweens.add({
             targets: laser,
-            x: targetX,
-            y: targetY,
-            duration: duration,
+            x: adjustedTargetX,
+            y: adjustedTargetY,
+            duration,
             ease: 'Linear',
             onComplete: () => {
-                // Check if hit or miss using grid method
                 const hit = this.grid.fireAtCell(targetX, targetY);
-                if(hit) {
-                    console.log("Hit!");
-                } else {
+                if (hit) {
+                    this.showExplosion(targetX, targetY);
                 }
 
                 this.scene.tweens.add({
@@ -156,8 +173,11 @@ export class WeaponSystem {
         });
     }
 
-    showExplosion(targetX, targetY) {
-        const explosion = this.scene.add.sprite(targetX, targetY, 'explosion').setDepth(20).setScale(0.6);
+    showExplosion(x, y) {
+        const explosion = this.scene.add.sprite(x, y, 'explosion')
+            .setDepth(20)
+            .setScale(0.6);
+
         explosion.play('explode');
         explosion.on('animationcomplete', () => explosion.destroy());
     }

@@ -356,9 +356,9 @@ export class Grid {
 
         // Create linear gradient from left (blue opaque) to right (transparent)
         const gradientRow = ctxRow.createLinearGradient(0, 0, 0, rowHeight);
-        gradientRow.addColorStop(0, 'rgba(0,0,222,0)');
-        gradientRow.addColorStop(0.5, 'rgba(0,0,222,0.4)');
-        gradientRow.addColorStop(1, 'rgba(0,0,222,0)');
+        gradientRow.addColorStop(0, 'rgba(255, 255, 255,0)');
+        gradientRow.addColorStop(0.5, 'rgba(255, 255, 255,0.4)');
+        gradientRow.addColorStop(1, 'rgba(255, 255, 255,0)');
 
         ctxRow.fillStyle = gradientRow;
         ctxRow.fillRect(0, 0, rowWidth, rowHeight);
@@ -380,9 +380,9 @@ export class Grid {
         const ctxCol = colGradientTexture.getContext();
 
         const gradientCol = ctxCol.createLinearGradient(0, 0, colWidth, 0);
-        gradientCol.addColorStop(0, 'rgba(0,0,222,0)');
-        gradientCol.addColorStop(0.5, 'rgba(0,0,222,0.4)');
-        gradientCol.addColorStop(1, 'rgba(0,0,222,0)');
+        gradientCol.addColorStop(0, 'rgba(255, 255, 255,0)');
+        gradientCol.addColorStop(0.5, 'rgba(255, 255, 255,0.4)');
+        gradientCol.addColorStop(1, 'rgba(255, 255, 255,0)');
 
         ctxCol.fillStyle = gradientCol;
         ctxCol.fillRect(0, 0, colWidth, colHeight);
