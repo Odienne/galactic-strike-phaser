@@ -17,7 +17,7 @@ export class Game extends Phaser.Scene {
         this.load.image('viewfinder', 'assets/viewfinder.png');
         this.load.image('bgFallback', 'assets/bg.png');
         this.load.image('missile', 'assets/missile.png');
-        this.load.video('bgVideo', 'assets/bg_video.webm', true);
+        this.load.video('bgVideo', 'assets/bg_video.mp4', true);
         this.load.spritesheet('explosion', 'assets/explosion3.png', {
             frameWidth: 512,
             frameHeight: 512,

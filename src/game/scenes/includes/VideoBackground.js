@@ -25,9 +25,11 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
     }
 
     // Try to play video (catch silently if autoplay fails)
-    video.play(true).catch(err => {
-        console.warn('Autoplay failed:', err);
-    });
+    try {
+        video.play(true)
+    } catch (e) {
+        console.warn('Autoplay failed:', e);
+    }
 
     function resizeVideo() {
         const videoWidth = nativeVideo.videoWidth;

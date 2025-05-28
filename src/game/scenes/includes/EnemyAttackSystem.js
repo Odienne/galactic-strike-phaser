@@ -89,7 +89,6 @@ export default class EnemyAttackSystem {
     }
 
     clearAttackBox() {
-        console.log(this.attackBox)
         if (this.attackBox && this.overlay.contains(this.attackBox)) {
             this.overlay.removeChild(this.attackBox);
             this.attackBox = null;
