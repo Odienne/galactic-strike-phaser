@@ -23,7 +23,155 @@ html, body, #game-container {
 }
 
 canvas {
-    width: 100% !important;  /* Scale canvas to container size */
+    width: 100% !important; /* Scale canvas to container size */
     height: 100% !important;
-    image-rendering: pixelated; /* Optional: better pixelated scaling */
+    /*image-rendering: pixelated; !* Optional: better pixelated scaling *!*/
+}
+
+#enemy-attack-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    pointer-events: none;
+    z-index: 1000; /*over uiOverlay*/
+
+    padding: 0;
+    box-sizing: border-box;
+
+    /* size & position will be set dynamically with JS */
+}
+
+.attack-box {
+    opacity: 1;
+    position: absolute;
+    width: 420px;
+    height: 100%;
+}
+
+.attack-box.left {
+    background: radial-gradient(ellipse 50% 90% at 0% 50%, #ff3e3e, transparent);
+    animation: glow 0.3s infinite alternate-reverse;
+    left: 0;
+}
+
+.attack-box.right {
+    background: radial-gradient(ellipse 50% 90% at 100% 50%, #ff3e3e, transparent);
+    animation: glow 0.3s infinite alternate-reverse;
+    right: 0;
+}
+
+.attack-box.defended.left {
+    background: radial-gradient(ellipse 50% 90% at 0% 50%, #69ff5e, transparent);
+    animation: none;
+    transition: opacity 0.5s ease;
+}
+
+.attack-box.defended.right {
+    background: radial-gradient(ellipse 50% 90% at 100% 50%, #69ff5e, transparent);
+    animation: none;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes glow {
+    0% {
+        width: 420px;
+    }
+
+    100% {
+        width: 666px;
+    }
+}
+
+@keyframes screen-shake {
+    0% {
+        transform: translate(0, 0);
+    }
+    10% {
+        transform: translate(-15px, 12px);
+    }
+    20% {
+        transform: translate(18px, -14px);
+    }
+    30% {
+        transform: translate(-22px, 18px);
+    }
+    40% {
+        transform: translate(20px, -12px);
+    }
+    50% {
+        transform: translate(-25px, 20px);
+    }
+    60% {
+        transform: translate(22px, -18px);
+    }
+    70% {
+        transform: translate(-18px, 12px);
+    }
+    80% {
+        transform: translate(15px, -10px);
+    }
+    90% {
+        transform: translate(-10px, 8px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+.shake {
+    animation: screen-shake 1.2s ease-in-out;
+}
+
+#screen-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10000; /* above everything else */
+}
+
+.flash {
+    animation: flash-black 1.2s ease-in-out;
+}
+
+@keyframes flash-black {
+    0% {
+        opacity: 1;
+    }
+    10% {
+        opacity: 1;
+    }
+    20% {
+        opacity: 0.2;
+    }
+    30% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.2;
+    }
+    60% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.4;
+    }
+    100% {
+        opacity: 0;
+    }
 }
