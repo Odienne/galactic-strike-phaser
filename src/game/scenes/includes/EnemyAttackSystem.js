@@ -1,6 +1,7 @@
 export default class EnemyAttackSystem {
-    constructor(scoreModule, gridConfig) {
+    constructor(scoreModule, systemVideoManager) {
         this.scoreModule = scoreModule;
+        this.systemVideoManager = systemVideoManager;
 
         // Create overlay div
         this.overlay = document.createElement('div');
@@ -46,6 +47,8 @@ export default class EnemyAttackSystem {
         this.defendTimeoutId = setTimeout(() => {
             this.resolveAttack(false);
         }, 3000); // 3 seconds to defend
+
+        this.systemVideoManager.changeVideo('computerDanger');
     }
 
     handleKeyDown(event) {
@@ -72,6 +75,7 @@ export default class EnemyAttackSystem {
 
         if (defended) {
             this.attackBox.classList.add('defended');
+            this.scoreModule.add(10);
             setTimeout(() => {
                 this.attackBox.style.opacity = '0';
             }, 200)
@@ -85,6 +89,7 @@ export default class EnemyAttackSystem {
             setTimeout(() => this.clearAttackBox(), 1000);
         }
 
+        this.systemVideoManager.changeVideo('computerIdle');
         this.scheduleNextAttack();
     }
 

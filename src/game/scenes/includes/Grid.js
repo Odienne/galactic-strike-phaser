@@ -27,7 +27,7 @@ export class Grid {
     }
 
     createGrid() {
-        const graphics = this.scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff, alpha: 0.3 } });
+        const graphics = this.scene.add.graphics({lineStyle: {width: 1, color: 0xffffff, alpha: 0.2}});
 
         for (let i = 0; i <= this.cols; i++) {
             const x = this.gridStartX + i * this.cellWidth;
@@ -107,7 +107,7 @@ export class Grid {
                 for (let i = 0; i < size; i++) {
                     const x = isHorizontal ? startCol + i : startCol;
                     const y = isHorizontal ? startRow : startRow + i;
-                    newShip.push({ col: x, row: y });
+                    newShip.push({col: x, row: y});
                 }
 
                 // check for collision
@@ -154,7 +154,7 @@ export class Grid {
         ];  // your ships, including two of length 2
 
         // Reset cell status grid
-        this.cellStatus = Array.from({ length: gridRows }, () => Array(gridCols).fill(null));
+        this.cellStatus = Array.from({length: gridRows}, () => Array(gridCols).fill(null));
 
         this.ships = [];  // Reset ships array
 
@@ -188,13 +188,18 @@ export class Grid {
 
                 if (canPlace) {
                     // Place the ship and save its cells
-                    const newShip = { cells: [], hits: 0, spriteKey, orientation: horizontal ? 'horizontal' : 'vertical', };
+                    const newShip = {
+                        cells: [],
+                        hits: 0,
+                        spriteKey,
+                        orientation: horizontal ? 'horizontal' : 'vertical',
+                    };
                     for (let i = 0; i < size; i++) {
                         const r = startRow + (horizontal ? 0 : i);
                         const c = startCol + (horizontal ? i : 0);
 
-                        this.cellStatus[r][c] = { type: 'ship', shipIndex: this.ships.length };
-                        newShip.cells.push({ r, c });
+                        this.cellStatus[r][c] = {type: 'ship', shipIndex: this.ships.length};
+                        newShip.cells.push({r, c});
                     }
 
                     this.ships.push(newShip);
@@ -242,8 +247,9 @@ export class Grid {
         const centerX = this.gridStartX + col * this.cellWidth + this.cellWidth / 2;
         const centerY = this.gridStartY + row * this.cellHeight + this.cellHeight / 2;
         const color = hit ? 0xff0000 : 0xffffff;
+        const opacity = hit ? 0.6 : 0.4;
 
-        this.cellOverlays[key] = this.scene.add.rectangle(centerX, centerY, this.cellWidth, this.cellHeight, color, 0.4).setOrigin(0.5);
+        this.cellOverlays[key] = this.scene.add.rectangle(centerX, centerY, this.cellWidth, this.cellHeight, color, opacity).setOrigin(0.5);
 
         // After revealing and updating hits:
         if (this.areAllShipsSunk()) {
@@ -257,14 +263,7 @@ export class Grid {
     }
 
     revealShip(ship) {
-        // Remove any existing overlays on ship cells
-        // ship.cells.forEach(({ r, c }) => {
-        //     const key = `${r}_${c}`;
-        //     if (this.cellOverlays && this.cellOverlays[key]) {
-        //         this.cellOverlays[key].destroy();
-        //         delete this.cellOverlays[key];
-        //     }
-        // });
+        this.addDebris(ship);
 
         // Determine orientation
         let horizontal = true;
@@ -288,25 +287,19 @@ export class Grid {
 
         // Choose sprite key
         let spriteKey = ship.spriteKey || `ship${ship.cells.length}`;
-        // If you want variety (e.g., ship2a, ship2b), maybe you already stored spriteKey during placement
-
         const sprite = this.scene.add.sprite(x, y, spriteKey).setOrigin(0.5);
 
         // Rotate if vertical
         if (!horizontal) {
             sprite.angle = 90;
-            // Swap displayWidth and displayHeight to match rotation
-            sprite.displayWidth = height;
-            sprite.displayHeight = width;
+            sprite.setScale(0.9);
         } else {
-            sprite.displayWidth = width;
-            sprite.displayHeight = height;
         }
 
-        sprite.setDepth(15);
+        sprite.setDepth(1);
+        sprite.setAlpha(0.7);
         ship.sprite = sprite;
     }
-
 
 
     randomOrientation() {
@@ -321,7 +314,7 @@ export class Grid {
         // Clear cell statuses and overlays
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
-                this.cellStatus[r][c] = { type: 'empty' };
+                this.cellStatus[r][c] = {type: 'empty'};
                 const key = `${r}_${c}`;
                 if (this.cellOverlays && this.cellOverlays[key]) {
                     this.cellOverlays[key].destroy();
@@ -392,5 +385,31 @@ export class Grid {
         this.colHighlight = this.scene.add.image(this.gridStartX + colWidth / 2, this.gridStartY + colHeight / 2, 'colGradient');
         this.colHighlight.setOrigin(0.5);
         this.colHighlight.setDepth(5);
+    }
+
+    addDebris(ship) {
+        ship.cells.forEach(({r, c}) => {
+            const key = `${r}_${c}`;
+
+            // Center of the cell
+            const x = this.gridStartX + c * this.cellWidth + this.cellWidth / 2;
+            const y = this.gridStartY + r * this.cellHeight + this.cellHeight / 2;
+
+            // Stone debris emitter
+            const stonesEmitter = this.scene.add.particles(x, y, 'explosion', {
+                frame: 'stone',
+                angle: {min: 240, max: 300},
+                speed: {min: 400, max: 800},
+                lifespan: 3200,
+                alpha: {start: 1, end: 0},
+                scale: {min: 0.05, max: 0.4},
+                rotate: {start: 0, end: 360, ease: 'Back.easeOut'},
+                gravityY: 800,
+                on: true
+            });
+
+            // Emit all at once at coordinates (x, y)
+            stonesEmitter.explode(3);
+        });
     }
 }

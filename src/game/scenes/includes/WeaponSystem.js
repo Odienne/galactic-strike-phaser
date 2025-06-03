@@ -29,7 +29,8 @@ export class WeaponSystem {
 
         let targets = [];
         let laserTexture = 'laser';
-        const bottomY = this.scene?.scale?.height ?? 1080;
+        const bottomY = (this.scene?.scale?.height ?? 1080) - 50;
+        const gridWidth = 1330;
 
         //margin right 27px
         switch (this.currentWeapon) {
@@ -37,7 +38,7 @@ export class WeaponSystem {
                 laserTexture = 'laser';
                 targets = [
                     {
-                        startX: (1920/2)+225,
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX,
                         targetY: centerY
@@ -56,13 +57,13 @@ export class WeaponSystem {
                         targetY: centerY
                     },
                     {
-                        startX: (1920/2)+225,
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX,
                         targetY: centerY
                     },
                     {
-                        startX: 1920,
+                        startX: 1900,
                         startY: bottomY,
                         targetX: centerX + spacingX,
                         targetY: centerY
@@ -73,7 +74,7 @@ export class WeaponSystem {
                 laserTexture = 'laser3';
                 targets = [
                     {
-                        startX: (1920/2)+225,
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX,
                         targetY: centerY
@@ -84,17 +85,17 @@ export class WeaponSystem {
                         targetX: centerX - spacingX, targetY: centerY - spacingY
                     },
                     {
-                        startX: 1920,
+                        startX: 1900,
                         startY: bottomY,
                         targetX: centerX + spacingX, targetY: centerY - spacingY
                     },
                     {
-                        startX: (1920/2)-150,
+                        startX: (gridWidth / 4) + 550,
                         startY: bottomY,
                         targetX: centerX - spacingX, targetY: centerY + spacingY
                     },
                     {
-                        startX: (1920/2)+550,
+                        startX: ((gridWidth / 4) * 3) + 550,
                         startY: bottomY,
                         targetX: centerX + spacingX, targetY: centerY + spacingY
                     },
@@ -113,7 +114,6 @@ export class WeaponSystem {
     }
 
     fireLaser(startX, startY, targetX, targetY, texture) {
-        console.log(startX, startY, targetX, targetY, texture)
         const laser = this.scene.add.sprite(startX, startY, texture)
             .setDepth(10)
             .setBlendMode(Phaser.BlendModes.ADD);
@@ -147,7 +147,7 @@ export class WeaponSystem {
         const adjustedTargetX = targetX;
         const adjustedTargetY = targetY;
 
-        const speed = 1600;
+        const speed = this.selectSpeed();
         const distance = Phaser.Math.Distance.Between(startX, startY, adjustedTargetX, adjustedTargetY);
         const duration = (distance / speed) * 1000;
 
@@ -174,11 +174,47 @@ export class WeaponSystem {
     }
 
     showExplosion(x, y) {
-        const explosion = this.scene.add.sprite(x, y, 'explosion')
-            .setDepth(20)
-            .setScale(0.6);
-
-        explosion.play('explode');
+        const explosion = this.selectExplosionSprite(x, y);
+        this.playSelectedExplosion(explosion);
         explosion.on('animationcomplete', () => explosion.destroy());
+    }
+
+    selectExplosionSprite(x, y) {
+        switch (this.currentWeapon) {
+            case 1:
+                return this.scene.add.sprite(x, y, 'explosion1');
+            case 2:
+                return this.scene.add.sprite(x, y, 'explosion2');
+            case 3:
+                return this.scene.add.sprite(x, y, 'explosion3');
+            default:
+                return this.scene.add.sprite(x, y, 'explosion1');
+        }
+    }
+
+    playSelectedExplosion(explosion) {
+        switch (this.currentWeapon) {
+            case 1:
+                return explosion.play("explode1");
+            case 2:
+                return explosion.play("explode2");
+            case 3:
+                return explosion.play("explode3");
+            default:
+                return explosion.play("explode1");
+        }
+    }
+
+    selectSpeed() {
+        switch (this.currentWeapon) {
+            case 1:
+                return 3600;
+            case 2:
+                return 3000;
+            case 3:
+                return 1200;
+            default:
+                return 3600;
+        }
     }
 }

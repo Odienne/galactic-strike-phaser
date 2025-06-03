@@ -6,10 +6,12 @@ export default class CountdownTimer {
         this.scene = scene;
         this.duration = 180;
 
-        this.text = scene.add.text(100, 1000, this.formatTime(this.duration), {
-            fontSize: '42px',
+        this.text = scene.add.text(146, 22, "Temps restant : " + this.formatTime(this.duration), {
+            fontSize: '22px',
+            fontWeight: 'bold',
+            letterSpacing: 3,
             color: '#ffffff',
-            fontFamily: 'monospace',
+            fontFamily: 'GothamNarrow', //gotham narrow et bold sur le timer
         }).setOrigin(0, 0).setDepth(10000);
 
         this.timerEvent = scene.time.addEvent({
@@ -23,13 +25,12 @@ export default class CountdownTimer {
     tick() {
         this.duration--;
 
-        this.text.setText(this.formatTime(this.duration));
+        this.text.setText("Temps restant : " + this.formatTime(this.duration));
 
         if (this.duration <= 0) {
             this.timerEvent.remove();
-            console.log('game over')
 
-            this.scene.scene.start('GameOver');
+            this.transitionToGameOver();
         }
     }
 
@@ -42,5 +43,19 @@ export default class CountdownTimer {
     destroy() {
         this.text.destroy();
         this.timerEvent.remove();
+    }
+
+    transitionToGameOver() {
+        // FX
+        const pixelated = this.scene.cameras.main.postFX.addPixelate(-1);
+        this.scene.add.tween({
+            targets: pixelated,
+            duration: 700,
+            amount: 40,
+            onComplete: () => {
+                this.scene.cameras.main.fadeOut(100);
+                this.scene.scene.start('GameOver');
+            }
+        })
     }
 }

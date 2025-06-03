@@ -17,6 +17,6 @@ export class Boot extends Scene
 
     create ()
     {
-        this.scene.start('Intro');
+        this.scene.start('Game');
     }
 }
