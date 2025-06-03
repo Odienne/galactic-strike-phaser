@@ -45,9 +45,17 @@ const config = {
     }
 };
 
+
+const game = new Phaser.Game(config);
+
+const gl = game.renderer.gl;
+const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+console.log('Max texture size supported:', maxTexSize);
+
 const StartGame = (parent) => {
 
     return new Game({ ...config, parent });
+
 
 }
 
