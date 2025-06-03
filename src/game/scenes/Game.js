@@ -79,7 +79,7 @@ export class Game extends Phaser.Scene {
 
         this.grid = new Grid(this);
         this.grid.createGrid();
-        //this.grid.animateHighlights();
+        this.grid.animateHighlights();
         this.systemVideoManager = new VideoSystemManager(this);
         this.enemyAttackSystem = new EnemyAttackSystem(this.score, this.systemVideoManager);
 

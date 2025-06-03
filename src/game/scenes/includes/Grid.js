@@ -44,6 +44,8 @@ export class Grid {
 
         this.createHighlights();
 
+        return false;
+
         this.rowTween = scene.tweens.add({
             targets: this.rowHighlight,
             y: {
