@@ -44,8 +44,6 @@ export class Grid {
 
         this.createHighlights();
 
-        return false;
-
         this.rowTween = scene.tweens.add({
             targets: this.rowHighlight,
             y: {
@@ -343,7 +341,7 @@ export class Grid {
 
     createRowHighlight() {
         // Create a horizontal gradient texture for the row highlight
-        const rowWidth = this.scene.scale.width;
+        const rowWidth = 1400;
         const rowHeight = this.cellHeight;
 
         const rowGradientTexture = this.scene.textures.createCanvas('rowGradient', rowWidth, rowHeight);
@@ -369,7 +367,7 @@ export class Grid {
 
 // Similarly for column highlight (vertical gradient)
         const colWidth = this.cellWidth;
-        const colHeight = this.scene.scale.height;
+        const colHeight = 1080;
 
         const colGradientTexture = this.scene.textures.createCanvas('colGradient', colWidth, colHeight);
         const ctxCol = colGradientTexture.getContext();
