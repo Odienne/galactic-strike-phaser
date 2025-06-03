@@ -32,7 +32,7 @@ export class Game extends Phaser.Scene {
         this.load.video('computerIdle', 'assets/videos/computer-idle.mp4', true);
         this.load.video('computerDanger', 'assets/videos/computer-danger.mp4', true);
 
-        this.load.video('bgVideo', 'assets/bg_video.mp4', true);
+        //this.load.video('bgVideo', 'assets/bg_video.mp4', true);
         this.load.video('cockpit', 'assets/videos/cockpit.webm', true);
 
         this.load.spritesheet('explosion1', 'assets/explosions/explosion1.png', {
@@ -79,7 +79,7 @@ export class Game extends Phaser.Scene {
 
         this.grid = new Grid(this);
         this.grid.createGrid();
-        this.grid.animateHighlights();
+        //this.grid.animateHighlights();
         this.systemVideoManager = new VideoSystemManager(this);
         this.enemyAttackSystem = new EnemyAttackSystem(this.score, this.systemVideoManager);
 

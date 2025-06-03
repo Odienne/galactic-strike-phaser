@@ -4,7 +4,7 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
         .setOrigin(0, 0)
         .setDepth(-11); // Behind video
 
-    const video = scene.add.video(0, 0, 'bgVideo').setDepth(-10).setOrigin(0, 0);
+    /*const video = scene.add.video(0, 0, 'bgVideo').setDepth(-10).setOrigin(0, 0);
 
     const nativeVideo = video.video;
 
@@ -41,5 +41,5 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
 
         video.setScale(scale);
         video.setPosition(gridStartX, gridStartY);
-    }
+    }*/
 }
