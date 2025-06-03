@@ -182,13 +182,13 @@ export class WeaponSystem {
     selectExplosionSprite(x, y) {
         switch (this.currentWeapon) {
             case 1:
-                return this.scene.add.sprite(x, y, 'explosion1');
+                return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
             case 2:
-                return this.scene.add.sprite(x, y, 'explosion2');
+                return this.scene.add.sprite(x, y, 'explosion2').setScale(2);
             case 3:
-                return this.scene.add.sprite(x, y, 'explosion3');
+                return this.scene.add.sprite(x, y, 'explosion3').setScale(2);
             default:
-                return this.scene.add.sprite(x, y, 'explosion1');
+                return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
         }
     }
 

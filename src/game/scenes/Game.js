@@ -36,20 +36,20 @@ export class Game extends Phaser.Scene {
         this.load.video('cockpit', 'assets/videos/cockpit.webm', true);
 
         this.load.spritesheet('explosion1', 'assets/explosions/explosion1.png', {
-            frameWidth: 512,
-            frameHeight: 512,
+            frameWidth: 128,
+            frameHeight: 128,
             endFrame: 63,
         });
 
         this.load.spritesheet('explosion2', 'assets/explosions/explosion2.png', {
-            frameWidth: 512,
-            frameHeight: 512,
+            frameWidth: 128,
+            frameHeight: 128,
             endFrame: 63,
         });
 
         this.load.spritesheet('explosion3', 'assets/explosions/explosion3.png', {
-            frameWidth: 512,
-            frameHeight: 512,
+            frameWidth: 128,
+            frameHeight: 128,
             endFrame: 63,
         });
 
