@@ -54,6 +54,7 @@ export default class CountdownTimer {
             amount: 40,
             onComplete: () => {
                 this.scene.cameras.main.fadeOut(100);
+                this.scene.enemyAttackSystem.destroy();
                 this.scene.scene.start('GameOver');
             }
         })

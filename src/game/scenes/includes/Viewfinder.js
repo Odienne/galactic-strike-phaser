@@ -10,7 +10,7 @@ export class Viewfinder {
         this.gridStartY = grid.gridStartY;
 
         this.viewfinder = this.createViewfinderSprite();
-        this.highlightRects = this.createHighlightRectangles(5); // max 5 highlights
+        this.highlightRects = this.createHighlightRectangles(9); // max 5 highlights
     }
 
     createViewfinderSprite() {
@@ -88,7 +88,11 @@ export class Viewfinder {
                     {x: mainPos.x - spacingX, y: mainPos.y - spacingY}, // left-top
                     {x: mainPos.x + spacingX, y: mainPos.y - spacingY}, // right-top
                     {x: mainPos.x - spacingX, y: mainPos.y + spacingY}, // left-bottom
-                    {x: mainPos.x + spacingX, y: mainPos.y + spacingY}  // right-bottom
+                    {x: mainPos.x + spacingX, y: mainPos.y + spacingY},  // right-bottom
+                    {x: mainPos.x + spacingX, y: mainPos.y},  // right
+                    {x: mainPos.x - spacingX, y: mainPos.y}, //left
+                    {x: mainPos.x, y: mainPos.y + spacingY}, //up
+                    {x: mainPos.x, y: mainPos.y - spacingY} //down
                 ];
             default:
                 return [mainPos]; // fallback to single center

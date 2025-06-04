@@ -8,6 +8,8 @@ import Score from "./includes/Score.js";
 import EnemyAttackSystem from "./includes/EnemyAttackSystem.js";
 import VideoSystemManager from "./includes/SystemVideoManager.js";
 import EnemyVideoManager from "./includes/EnemyVideoManager.js";
+import SoundSystem from "./includes/SoundSystem.js";
+import SFX from './includes/sfx.json';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -32,10 +34,6 @@ export class Game extends Phaser.Scene {
 
         this.load.video('computerIdle', 'assets/videos/computer/computer-idle.webm', true);
         this.load.video('computerDanger', 'assets/videos/computer/computer-danger.webm', true);
-
-
-        this.load.video('enemyStandby', 'assets/videos/enemy/enemy-standby.webm', true);
-        this.load.video('enemyAttack', 'assets/videos/enemy/enemy-attack.webm', true);
 
         this.load.video('bgVideo', 'assets/bg_video.webm', true);
 
@@ -73,6 +71,9 @@ export class Game extends Phaser.Scene {
         this.load.atlas('explosion', 'assets/particles/explosion.png', 'assets/particles/explosion.json');
 
         this.loadFonts();
+
+        this.preloadAudio();
+        this.preloadEnemyVideos();
     }
 
     create() {
@@ -85,6 +86,7 @@ export class Game extends Phaser.Scene {
         this.grid = new Grid(this);
         this.grid.createGrid();
         this.grid.animateHighlights();
+        this.soundSystem = new SoundSystem(this);
         this.enemyVideoManager = new EnemyVideoManager(this);
         this.systemVideoManager = new VideoSystemManager(this);
         this.enemyAttackSystem = new EnemyAttackSystem(this.score, this.systemVideoManager);
@@ -179,5 +181,34 @@ export class Game extends Phaser.Scene {
         }).catch(function (error) {
             return error;
         });
+    }
+
+    preloadAudio() {
+        console.log(Object.entries(SFX))
+        Object.entries(SFX).forEach((sfx) => {
+            console.log("loading", sfx)
+
+            this.load.audio(sfx[1].name, sfx[1].src)
+        });
+    }
+
+    preloadEnemyVideos() {
+        this.load.video('enemyStandby', 'assets/videos/enemy/enemy-standby.webm', true);
+
+        this.load.video('enemyAttack01', 'assets/videos/enemy/enemy-attack-01.webm');
+        this.load.video('enemyAttack02', 'assets/videos/enemy/enemy-attack-02.webm');
+        this.load.video('enemyAttack03', 'assets/videos/enemy/enemy-attack-03.webm');
+
+        this.load.video('enemyFurious01', 'assets/videos/enemy/enemy-furious-01.webm');
+        this.load.video('enemyFurious02', 'assets/videos/enemy/enemy-furious-02.webm');
+        this.load.video('enemyFurious03', 'assets/videos/enemy/enemy-furious-03.webm');
+        this.load.video('enemyFurious04', 'assets/videos/enemy/enemy-furious-04.webm');
+
+        this.load.video('enemyMocking01', 'assets/videos/enemy/enemy-mocking-01.webm', false);
+        this.load.video('enemyMocking02', 'assets/videos/enemy/enemy-mocking-02.webm');
+        this.load.video('enemyMocking03', 'assets/videos/enemy/enemy-mocking-03.webm');
+
+        this.load.video('enemySurrender01', 'assets/videos/enemy/enemy-surrender-01.webm');
+        this.load.video('enemySurrender02', 'assets/videos/enemy/enemy-surrender-02.webm');
     }
 }

@@ -4,7 +4,6 @@ export class WeaponSystem {
         this.grid = grid;
         this.currentWeapon = 1;
 
-        console.log('weapon init')
         this.setupInput();
     }
 
@@ -81,24 +80,47 @@ export class WeaponSystem {
                         targetY: centerY
                     },
                     {
-                        startX: 550,
+                        startX: (gridWidth / 2) + 550,
+                        startY: bottomY,
+                        targetX: centerX - spacingX,
+                        targetY: centerY
+                    },
+                    {
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX - spacingX, targetY: centerY - spacingY
                     },
                     {
-                        startX: 1900,
+                        startX: (gridWidth / 2) + 550,
+                        startY: bottomY,
+                        targetX: centerX + spacingX,
+                        targetY: centerY
+                    },
+                    {
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX + spacingX, targetY: centerY - spacingY
                     },
                     {
-                        startX: (gridWidth / 4) + 550,
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
                         targetX: centerX - spacingX, targetY: centerY + spacingY
                     },
                     {
-                        startX: ((gridWidth / 4) * 3) + 550,
+                        startX: (gridWidth / 2) + 550,
                         startY: bottomY,
-                        targetX: centerX + spacingX, targetY: centerY + spacingY
+                        targetX: centerX, targetY: centerY - spacingY
+                    },
+                    {
+                        startX: (gridWidth / 2) + 550,
+                        startY: bottomY,
+                        targetX: centerX, targetY: centerY + spacingY
+                    },
+                    {
+                        startX: (gridWidth / 2) + 550,
+                        startY: bottomY,
+                        targetX: centerX + spacingX,
+                        targetY: centerY + spacingY
                     },
                 ];
                 break;
@@ -115,6 +137,13 @@ export class WeaponSystem {
     }
 
     fireLaser(startX, startY, targetX, targetY, texture) {
+        const adjustedTargetX = targetX;
+        const adjustedTargetY = targetY;
+
+        const speed = this.selectSpeed();
+        const distance = Phaser.Math.Distance.Between(startX, startY, adjustedTargetX, adjustedTargetY);
+        const duration = (distance / speed) * 1000;
+
         const laser = this.scene.add.sprite(startX, startY, texture)
             .setDepth(10)
             .setBlendMode(Phaser.BlendModes.ADD);
@@ -142,15 +171,6 @@ export class WeaponSystem {
         const angle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
         laser.rotation = angle + Math.PI / 2;
 
-        // const laserHeight = (laser.displayHeight || 40) - 24;
-        // const offsetX = laserHeight * Math.cos(angle);
-        // const offsetY = laserHeight * Math.sin(angle);
-        const adjustedTargetX = targetX;
-        const adjustedTargetY = targetY;
-
-        const speed = this.selectSpeed();
-        const distance = Phaser.Math.Distance.Between(startX, startY, adjustedTargetX, adjustedTargetY);
-        const duration = (distance / speed) * 1000;
 
         this.scene.tweens.add({
             targets: laser,
@@ -185,9 +205,9 @@ export class WeaponSystem {
             case 1:
                 return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
             case 2:
-                return this.scene.add.sprite(x, y, 'explosion2').setScale(2);
+                return this.scene.add.sprite(x, y, 'explosion2').setScale(2.5);
             case 3:
-                return this.scene.add.sprite(x, y, 'explosion3').setScale(2);
+                return this.scene.add.sprite(x, y, 'explosion3').setScale(3);
             default:
                 return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
         }

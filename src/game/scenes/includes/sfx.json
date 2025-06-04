@@ -1,0 +1,37 @@
+{
+  "fire": {
+    "id": "1",
+    "name": "fire",
+    "src": "assets/sfx/01-fire.mp3",
+    "description": "Played when player presses the fire button",
+    "object": null
+  },
+  "laser-hit": {
+    "id": "2",
+    "name": "laser_hit",
+    "src": "assets/sfx/02-laser_hit.mp3",
+    "description":  "Played when laser hits something",
+    "object":  null
+  },
+  "laser-miss": {
+    "id": "3",
+    "name": "laser_miss",
+    "src": "assets/sfx/03-laser_miss.mp3",
+    "description":  "Played when laser misses",
+    "object":  null
+  },
+  "ship-explosion": {
+    "id": "4",
+    "name": "ship_explosion",
+    "src": "assets/sfx/04-ship_explosion.mp3",
+    "description":  "Played when ship is sunk",
+    "object":  null
+  },
+  "bgm": {
+    "id": "5",
+    "name": "bgm",
+    "src": "assets/bgm/10-rate_the_rizz.mp3",
+    "description":  "Played when ship is sunk",
+    "object":  null
+  }
+}
