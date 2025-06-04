@@ -7,6 +7,7 @@ import CountdownTimer from './includes/CountdownTimer.js';
 import Score from "./includes/Score.js";
 import EnemyAttackSystem from "./includes/EnemyAttackSystem.js";
 import VideoSystemManager from "./includes/SystemVideoManager.js";
+import EnemyVideoManager from "./includes/EnemyVideoManager.js";
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -29,11 +30,14 @@ export class Game extends Phaser.Scene {
         this.load.image('laser3', 'assets/laser3.png');
         this.load.image('missile', 'assets/missile.png');
 
-        this.load.video('computerIdle', 'assets/videos/computer-idle.mp4', true);
-        this.load.video('computerDanger', 'assets/videos/computer-danger.mp4', true);
+        this.load.video('computerIdle', 'assets/videos/computer/computer-idle.webm', true);
+        this.load.video('computerDanger', 'assets/videos/computer/computer-danger.webm', true);
 
-        //this.load.video('bgVideo', 'assets/bg_video.mp4', true);
-        this.load.video('cockpit', 'assets/videos/cockpit.webm', true);
+
+        this.load.video('enemyStandby', 'assets/videos/enemy/enemy-standby.webm', true);
+        this.load.video('enemyAttack', 'assets/videos/enemy/enemy-attack.webm', true);
+
+        this.load.video('bgVideo', 'assets/bg_video.webm', true);
 
         this.load.spritesheet('explosion1', 'assets/explosions/explosion1.png', {
             frameWidth: 128,
@@ -72,6 +76,7 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
+        console.log('%c[GameScene] create() called', 'color: orange; font-weight: bold');
         this.addOverlay = addOverlay(this);
 
         this.score = new Score(this);
@@ -80,11 +85,11 @@ export class Game extends Phaser.Scene {
         this.grid = new Grid(this);
         this.grid.createGrid();
         this.grid.animateHighlights();
+        this.enemyVideoManager = new EnemyVideoManager(this);
         this.systemVideoManager = new VideoSystemManager(this);
         this.enemyAttackSystem = new EnemyAttackSystem(this.score, this.systemVideoManager);
 
         this.weaponSystem = new WeaponSystem(this, this.grid);
-
         this.viewfinder = new Viewfinder(this, this.weaponSystem);
 
         addVideoBackground(this, this.grid.gridStartX, this.grid.gridStartY, this.grid.gridWidth, this.grid.gridHeight);

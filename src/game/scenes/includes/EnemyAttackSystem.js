@@ -19,36 +19,55 @@ export default class EnemyAttackSystem {
 
         window.addEventListener('keydown', this.handleKeyDown);
 
+        this.attackScheduled = false;
         this.scheduleNextAttack();
     }
 
     nextRandomAttackTimer() {
-        let min = 6000;
-        let max = 16000;
+        let min = 9000;
+        let max = 19000;
         return Math.random() * (max - min) + min;
     }
 
-    scheduleNextAttack() {
+    async scheduleNextAttack() {
+        console.log('sheduling next attack')
+        console.log(this.attackScheduled)
+        if (this.attackScheduled) {
+            console.warn('Attack already scheduled, skipping');
+            return;
+        }
+
+        this.attackScheduled = true;
+
+        if (this.attackTimeoutId) {
+            clearTimeout(this.attackTimeoutId);
+            this.attackTimeoutId = null;
+        }
+
+        await this.systemVideoManager.changeVideo('computerIdle');
+        console.log('video changed to idle')
+
         this.attackTimeoutId = setTimeout(() => {
+            this.attackScheduled = false;
             this.triggerAttack();
         }, this.nextRandomAttackTimer());
     }
 
-    triggerAttack() {
+    async triggerAttack() {
+        await this.systemVideoManager.changeVideo('computerDanger');
+        console.log('loaded danger, start red lights')
+
         this.canDefend = true;
         this.currentAttackSide = Math.random() < 0.5 ? 'left' : 'right';
 
         this.attackBox = document.createElement('div');
-        this.attackBox.classList.add('attack-box');
-        this.attackBox.classList.add(this.currentAttackSide);
-
+        this.attackBox.classList.add('attack-box', this.currentAttackSide);
         this.overlay.appendChild(this.attackBox);
 
         this.defendTimeoutId = setTimeout(() => {
             this.resolveAttack(false);
-        }, 3000); // 3 seconds to defend
-
-        this.systemVideoManager.changeVideo('computerDanger');
+            this.attackScheduled = false; // Just in case
+        }, 3000);
     }
 
     handleKeyDown(event) {
@@ -63,7 +82,9 @@ export default class EnemyAttackSystem {
         }
     }
 
-    resolveAttack(defended) {
+    async resolveAttack(defended) {
+        console.log('resolving')
+        if (!this.attackBox || !this.canDefend) return; // Prevent double call
         this.canDefend = false;
 
         if (this.defendTimeoutId) {
@@ -89,7 +110,6 @@ export default class EnemyAttackSystem {
             setTimeout(() => this.clearAttackBox(), 1000);
         }
 
-        this.systemVideoManager.changeVideo('computerIdle');
         this.scheduleNextAttack();
     }
 

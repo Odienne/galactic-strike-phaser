@@ -1,39 +1,36 @@
 export default class VideoSystemManager {
-    /**
-     * @param {Phaser.Scene} scene - The scene to add video to
-     */
     constructor(scene) {
         this.scene = scene;
 
-        // Add a video object offscreen initially (empty key)
-        this.video = this.scene.add.video(42, 786, 'computerIdle')
-            .setOrigin(0, 0)        // bottom-left anchor
-            .setDepth(400);
+        const x = 42;
+        const y = 786;
 
-        this.playVideo();
+        this.videoMap = {
+            computerIdle: this.scene.add.video(x, y, 'computerIdle').setOrigin(0, 0).setDepth(400).setVisible(true),
+            computerDanger: this.scene.add.video(x, y, 'computerDanger').setOrigin(0, 0).setDepth(400).setVisible(true),
+        };
     }
 
-    changeVideo(key) {
-        //destroy previous video
-        this.video.destroy();
-        //add new video key
-        this.video = this.scene.add.video(42, 786, key)
-            .setOrigin(0, 0)        // bottom-left anchor
-            .setDepth(400);
-
-        this.playVideo();
-    }
-
-    playVideo() {
-        // Try to play video (catch silently if autoplay fails)
-        try {
-            this.video.play(true)
-            this.video.once('play', () => {
-                this.video.setDisplaySize(477, 270);
-            });
-        } catch (e) {
-            console.warn('Autoplay failed:', e);
+    async changeVideo(key) {
+        if (this.currentVideo) {
+            this.currentVideo.setDepth(300);
+            this.currentVideo.stop();
         }
-    }
 
+        this.currentVideo = this.videoMap[key];
+        this.currentVideo.setCurrentTime(0);
+
+        return new Promise((resolve) => {
+            const handleReady = () => {
+                this.currentVideo.off('play', handleReady); // clean listener
+                this.currentVideo.setDisplaySize(477, 270);
+                this.currentVideo.setDepth(400);
+            };
+
+            this.currentVideo.once('play', handleReady);
+            this.currentVideo.setDepth(400);
+            this.currentVideo.play(true);
+            resolve();
+        });
+    }
 }

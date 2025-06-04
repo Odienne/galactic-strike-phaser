@@ -4,6 +4,7 @@ export class WeaponSystem {
         this.grid = grid;
         this.currentWeapon = 1;
 
+        console.log('weapon init')
         this.setupInput();
     }
 

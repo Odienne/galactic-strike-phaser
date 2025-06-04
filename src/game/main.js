@@ -1,7 +1,6 @@
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
-import { IntroScene } from './scenes/IntroScene.js';
 import { Preloader } from './scenes/Preloader';
 import { AUTO, Game } from 'phaser';
 
@@ -23,7 +22,6 @@ const config = {
     scene: [
         Boot,
         Preloader,
-        IntroScene,
         MainGame,
         GameOver
     ],
@@ -45,18 +43,15 @@ const config = {
     }
 };
 
-
-const game = new Phaser.Game(config);
-
-const gl = game.renderer.gl;
-const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-console.log('Max texture size supported:', maxTexSize);
-
 const StartGame = (parent) => {
 
-    return new Game({ ...config, parent });
+    const game = new Game({ ...config, parent });
 
+    const gl = game.renderer.gl;
+    const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    console.log('Max texture size supported:', maxTexSize);
 
+    return game;
 }
 
 export default StartGame;
