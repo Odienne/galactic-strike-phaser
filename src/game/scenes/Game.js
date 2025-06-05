@@ -18,6 +18,8 @@ export class Game extends Phaser.Scene {
 
     preload() {
         this.load.image('uiOverlay', 'assets/ui-overlay.png');
+        this.load.image('redAlertLeft', 'assets/red-alert-gradient-left.png');
+        this.load.image('redAlertRight', 'assets/red-alert-gradient-right.png');
         this.load.image('viewfinder', 'assets/viewfinder.png');
         this.load.image('viewfinder2', 'assets/viewfinder2.png');
         this.load.image('viewfinder3', 'assets/viewfinder3.png');
@@ -30,10 +32,9 @@ export class Game extends Phaser.Scene {
         this.load.image('laser', 'assets/laser.png');
         this.load.image('laser2', 'assets/laser2.png');
         this.load.image('laser3', 'assets/laser3.png');
-        this.load.image('missile', 'assets/missile.png');
 
-        this.load.video('computerIdle', 'assets/videos/computer/computer-idle.webm', true);
-        this.load.video('computerDanger', 'assets/videos/computer/computer-danger.webm', true);
+        this.load.video('computerIdle', 'assets/videos/computer/computer-idle.webm');
+        this.load.video('computerDanger', 'assets/videos/computer/computer-danger.webm');
 
         this.load.video('bgVideo', 'assets/bg_video.webm', true);
 
@@ -55,10 +56,10 @@ export class Game extends Phaser.Scene {
             endFrame: 63,
         });
 
-        this.load.spritesheet('glassBreak', 'assets/glass-shatter.png', {
-            frameWidth: 256,
-            frameHeight: 256,
-            endFrame: 24,
+        this.load.spritesheet('explosionFinal', 'assets/explosion-final.png', {
+            frameWidth: 128,
+            frameHeight: 128,
+            endFrame: 63,
         });
 
         this.load.image('ship5', 'assets/ships/ship5.png');
@@ -77,32 +78,48 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
-        console.log('%c[GameScene] create() called', 'color: orange; font-weight: bold');
-        this.addOverlay = addOverlay(this);
+        this.time.addEvent({
+            delay: 1000,
+            loop: true,
+            callback: () => {
+                console.log('FPS:', this.game.loop.actualFps.toFixed(1));
+            }
+        });
+
+        addOverlay(this);
 
         this.score = new Score(this);
         this.timer = new CountdownTimer(this)
 
-        this.grid = new Grid(this);
-        this.grid.createGrid();
-        this.grid.animateHighlights();
         this.soundSystem = new SoundSystem(this);
         this.enemyVideoManager = new EnemyVideoManager(this);
         this.systemVideoManager = new VideoSystemManager(this);
-        this.enemyAttackSystem = new EnemyAttackSystem(this.score, this.systemVideoManager);
 
-        this.weaponSystem = new WeaponSystem(this, this.grid);
-        this.viewfinder = new Viewfinder(this, this.weaponSystem);
+        this.grid = new Grid(this, this.enemyVideoManager);
 
-        addVideoBackground(this, this.grid.gridStartX, this.grid.gridStartY, this.grid.gridWidth, this.grid.gridHeight);
+
+        this.bgVideo = addVideoBackground(this, this.grid.gridStartX, this.grid.gridStartY, this.grid.gridWidth, this.grid.gridHeight);
 
         this.generatesTextures();
-
         this.placeCurtains();
+
+
+        setTimeout(() => {
+            this.enemyVideoManager.playRandomEnemyAttackVideo(() => this.startPlayerGamePlay());
+        }, 3000)
+    }
+
+    startPlayerGamePlay() {
+        this.weaponSystem = new WeaponSystem(this, this.grid, this.soundSystem);
+        this.viewfinder = new Viewfinder(this, this.weaponSystem);
+        this.enemyAttackSystem = new EnemyAttackSystem(this, this.score, this.systemVideoManager, this.enemyVideoManager, this.soundSystem);
+        this.slideCurtains();
     }
 
     update() {
-        this.viewfinder.update(this.grid.colHighlight, this.grid.rowHighlight);
+        if (this.viewfinder) {
+            this.viewfinder.update(this.grid.colHighlight, this.grid.rowHighlight);
+        }
     }
 
     generatesTextures() {
@@ -131,6 +148,8 @@ export class Game extends Phaser.Scene {
     }
 
     slideCurtains() {
+        this.soundSystem.playCurtainOpen();
+
         // Slide top curtain up (off screen)
         this.tweens.add({
             targets: this.topCurtain,
@@ -146,10 +165,6 @@ export class Game extends Phaser.Scene {
             ease: 'Power2',
             duration: 3600
         });
-
-        // Remove listeners so it only happens once (optional)
-        this.input.off('pointerdown', this.slideCurtains, this);
-        this.input.keyboard.off('keydown', this.slideCurtains, this);
     }
 
     placeCurtains() {
@@ -163,10 +178,6 @@ export class Game extends Phaser.Scene {
             .setDepth(200) // on top of viewfinder
             .setOrigin(0, 0);   // anchor bottom center
         this.bottomCurtain.setDisplaySize(this.grid.gridWidth, 1080 / 2);
-
-        // Listen to any pointer down (click/tap) or keyboard event
-        this.input.on('pointerdown', this.slideCurtains, this);
-        this.input.keyboard.on('keydown', this.slideCurtains, this);
     }
 
     loadFonts() {
@@ -184,29 +195,26 @@ export class Game extends Phaser.Scene {
     }
 
     preloadAudio() {
-        console.log(Object.entries(SFX))
         Object.entries(SFX).forEach((sfx) => {
-            console.log("loading", sfx)
-
             this.load.audio(sfx[1].name, sfx[1].src)
         });
     }
 
     preloadEnemyVideos() {
-        this.load.video('enemyStandby', 'assets/videos/enemy/enemy-standby.webm', true);
+        this.load.video('enemyStandBy', 'assets/videos/enemy/enemy-standby.webm', true);
 
         this.load.video('enemyAttack01', 'assets/videos/enemy/enemy-attack-01.webm');
         this.load.video('enemyAttack02', 'assets/videos/enemy/enemy-attack-02.webm');
-        this.load.video('enemyAttack03', 'assets/videos/enemy/enemy-attack-03.webm');
 
         this.load.video('enemyFurious01', 'assets/videos/enemy/enemy-furious-01.webm');
         this.load.video('enemyFurious02', 'assets/videos/enemy/enemy-furious-02.webm');
         this.load.video('enemyFurious03', 'assets/videos/enemy/enemy-furious-03.webm');
         this.load.video('enemyFurious04', 'assets/videos/enemy/enemy-furious-04.webm');
 
-        this.load.video('enemyMocking01', 'assets/videos/enemy/enemy-mocking-01.webm', false);
+        this.load.video('enemyMocking01', 'assets/videos/enemy/enemy-mocking-01.webm');
         this.load.video('enemyMocking02', 'assets/videos/enemy/enemy-mocking-02.webm');
         this.load.video('enemyMocking03', 'assets/videos/enemy/enemy-mocking-03.webm');
+        this.load.video('enemyMocking04', 'assets/videos/enemy/enemy-mocking-04.webm');
 
         this.load.video('enemySurrender01', 'assets/videos/enemy/enemy-surrender-01.webm');
         this.load.video('enemySurrender02', 'assets/videos/enemy/enemy-surrender-02.webm');

@@ -29,9 +29,6 @@ const config = {
         target: 60,
         forceSetTimeOut: true  // Use setTimeout instead of requestAnimationFrame (important for strict limiting)
     },
-    physics: {
-        default: 'arcade'
-    },
     render: {
         antialias: true,
         roundPixels: false,

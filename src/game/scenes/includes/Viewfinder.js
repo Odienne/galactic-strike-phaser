@@ -10,11 +10,13 @@ export class Viewfinder {
         this.gridStartY = grid.gridStartY;
 
         this.viewfinder = this.createViewfinderSprite();
-        this.highlightRects = this.createHighlightRectangles(9); // max 5 highlights
+        this.highlightRects = this.createHighlightRectangles(9); // max 9 highlights
+
+        this.highlightAlpha = 0.2;
     }
 
     createViewfinderSprite() {
-        const sprite = this.scene.add.sprite(0, 0, 'viewfinder3');
+        const sprite = this.scene.add.sprite(0, 0, 'viewfinder');
         sprite.setOrigin(0.5);
         sprite.setDepth(100);
         sprite.setVisible(false);
@@ -108,19 +110,19 @@ export class Viewfinder {
     setWeaponStyle(weaponId) {
         switch (weaponId) {
             case 1: // red
-                this.setHighlightStyle(0xff0000, 0.5, 0.2);
+                this.setHighlightStyle(0xff0000, 0.5, this.highlightAlpha);
                 this.viewfinder.setTexture('viewfinder');
                 break;
             case 2: // violet
-                this.setHighlightStyle(0xe66eff, 0.5, 0.2);
+                this.setHighlightStyle(0xe66eff, 0.5, this.highlightAlpha);
                 this.viewfinder.setTexture('viewfinder2');
                 break;
             case 3: // orange
-                this.setHighlightStyle(0xff9300, 0.5, 0.2);
+                this.setHighlightStyle(0xff9300, 0.5, this.highlightAlpha);
                 this.viewfinder.setTexture('viewfinder3');
                 break;
             default:
-                this.setHighlightStyle(0xffffff, 0.5, 0.2);
+                this.setHighlightStyle(0xff0000, 0.5, this.highlightAlpha);
                 this.viewfinder.setTexture('viewfinder1'); // fallback sprite
         }
     }
@@ -153,6 +155,44 @@ export class Viewfinder {
             } else {
                 rect.setVisible(false);
             }
+        });
+    }
+
+    setAccentColorRectangles() {
+        this.highlightAlpha = 0.5;
+    }
+
+    resetAccentColorRectangles() {
+        this.highlightAlpha = 0.2;
+    }
+
+
+    lockViewfinderAnimation() {
+        const vf = this.viewfinder;
+
+        vf.setScale(1);
+        vf.setAngle(0);
+
+        this.scene.tweens.add({
+            targets: vf,
+            scale: 0.8,
+            angle: 135,
+            duration: 200,
+            ease: 'Cubic.easeOut',
+            yoyo: false
+        });
+    }
+
+    unlockViewfinderAnimation() {
+        const vf = this.viewfinder;
+
+        this.scene.tweens.add({
+            targets: vf,
+            scale: 1,
+            angle: 0,
+            duration: 200,
+            ease: 'Cubic.easeOut',
+            yoyo: false
         });
     }
 

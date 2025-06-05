@@ -30,7 +30,7 @@ export default class Score {
         this.scene.tweens.add({
             targets: this.scoreText,
             alpha: 0.2,
-            duration: 80,
+            duration: 100,
             yoyo: true,
             repeat: 3,
             onComplete: () => {
@@ -62,17 +62,17 @@ export default class Score {
 
     setRedGlow(enabled) {
         if (enabled) {
-            this.scoreText.setStroke('#ff0000', 2);
+            this.scoreText.setColor('#ff0000');
         } else {
-            this.scoreText.setStroke('#ffffff', 0);
+            this.scoreText.setColor('#ffffff');
         }
     }
 
     setGreenGlow(enabled) {
         if (enabled) {
-            this.scoreText.setStroke('#00ff00', 2);
+            this.scoreText.setColor('#00ff00');
         } else {
-            this.scoreText.setStroke('#ffffff', 0);
+            this.scoreText.setColor('#ffffff');
         }
     }
 }

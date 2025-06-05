@@ -71,12 +71,12 @@ canvas {
 }
 
 .attack-box.left {
-    animation: glow 1s infinite alternate-reverse;
+    /*animation: glow 1s infinite alternate-reverse;*/
     left: 0;
 }
 
 .attack-box.right {
-    animation: glow 1s infinite alternate-reverse;
+    /*animation: glow 1s infinite alternate-reverse;*/
     right: 0;
 }
 
@@ -140,7 +140,7 @@ canvas {
 }
 
 .shake {
-    animation: screen-shake 0.6s ease-in-out;
+    /*animation: screen-shake 0.6s ease-in-out;*/
 }
 
 #screen-flash {
@@ -156,7 +156,7 @@ canvas {
 }
 
 .flash {
-    animation: flash-black 0.6s ease-in-out;
+    /*animation: flash-black 0.6s ease-in-out;*/
 }
 
 @keyframes flash-black {

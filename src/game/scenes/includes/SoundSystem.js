@@ -4,14 +4,60 @@ export default class SoundSystem {
     constructor(scene) {
         this.scene = scene;
         this.bgm = this.scene.sound.add('bgm');
+        this.curtainOpen = this.scene.sound.add('curtain_open');
+        this.shipExplosion = this.scene.sound.add('ship_explosion');
+        this.attackParried = this.scene.sound.add('attack_parried');
+        this.playerShipExplosion = this.scene.sound.add('player_explosion');
+        this.laser1 = this.scene.sound.add('laser1');
+        this.cantFire = this.scene.sound.add('cantFire');
+        this.lock = this.scene.sound.add('lock');
+        this.doubleLock = this.scene.sound.add('double_lock');
 
         this.playBgm();
     }
 
 
-
     playBgm() {
+        this.shipExplosion.setVolume(1);
         this.bgm.play();
+    }
+
+    playExplosion() {
+        this.shipExplosion.setVolume(0.3);
+        this.shipExplosion.play();
+    }
+
+    playAttackParried() {
+        this.attackParried.setVolume(0.8);
+        this.attackParried.play();
+    }
+
+    playCantFire() {
+        this.cantFire.setVolume(0.8);
+        this.cantFire.play();
+    }
+
+    playLock() {
+        this.lock.setVolume(0.8);
+        this.lock.play();
+    }
+    playDoubleLock() {
+        this.doubleLock.setVolume(0.8);
+        this.doubleLock.play();
+    }
+
+    playPlayerShipExplosion() {
+        this.playerShipExplosion.setVolume(0.4);
+        this.playerShipExplosion.play();
+    }
+    playCurtainOpen() {
+        this.curtainOpen.setVolume(1);
+        this.curtainOpen.play();
+    }
+
+    playLaser1() {
+        this.laser1.setVolume(0.3);
+        this.laser1.play();
     }
 
     destroy() {

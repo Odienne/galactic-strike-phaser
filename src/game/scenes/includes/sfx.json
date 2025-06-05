@@ -1,8 +1,8 @@
 {
-  "fire": {
+  "laser1": {
     "id": "1",
-    "name": "fire",
-    "src": "assets/sfx/01-fire.mp3",
+    "name": "laser1",
+    "src": "assets/sfx/01-laser1.mp3",
     "description": "Played when player presses the fire button",
     "object": null
   },
@@ -27,11 +27,53 @@
     "description":  "Played when ship is sunk",
     "object":  null
   },
+  "player-explosion": {
+    "id": "6",
+    "name": "player_explosion",
+    "src": "assets/sfx/06-player_explosion.mp3",
+    "description":  "Played when player is hit",
+    "object":  null
+  },
+  "curtain-open": {
+    "id": "6",
+    "name": "curtain_open",
+    "src": "assets/sfx/08-curtain_open.mp3",
+    "description":  "Played when player is hit",
+    "object":  null
+  },
   "bgm": {
     "id": "5",
     "name": "bgm",
-    "src": "assets/bgm/10-rate_the_rizz.mp3",
-    "description":  "Played when ship is sunk",
+    "src": "assets/bgm/11-bgm.mp3",
+    "description":  "BGM music",
+    "object":  null
+  },
+  "attack-parried": {
+    "id": "7",
+    "name": "attack_parried",
+    "src": "assets/sfx/07-attack_parried.mp3",
+    "description":  "Played when player parry an attack",
+    "object":  null
+  },
+  "cant-fire": {
+    "id": "9",
+    "name": "cantFire",
+    "src": "assets/sfx/09-cantFire.mp3",
+    "description":  "Played when player tries to fire without locking row and column",
+    "object":  null
+  },
+  "lock": {
+    "id": "10",
+    "name": "lock",
+    "src": "assets/sfx/10-lock.mp3",
+    "description":  "Played when player lock a row or a column",
+    "object":  null
+  },
+  "double_lock": {
+    "id": "11",
+    "name": "double_lock",
+    "src": "assets/sfx/11-double_lock.mp3",
+    "description":  "Played when player locked row and column",
     "object":  null
   }
 }

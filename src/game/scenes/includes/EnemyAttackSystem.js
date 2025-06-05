@@ -1,7 +1,10 @@
 export default class EnemyAttackSystem {
-    constructor(scoreModule, systemVideoManager) {
+    constructor(scene, scoreModule, systemVideoManager, enemyVideoManager, soundSystem) {
+        this.scene = scene;
         this.scoreModule = scoreModule;
         this.systemVideoManager = systemVideoManager;
+        this.enemyVideoManager = enemyVideoManager;
+        this.soundSystem = soundSystem;
 
         // Create overlay div
         this.overlay = document.createElement('div');
@@ -20,18 +23,18 @@ export default class EnemyAttackSystem {
         window.addEventListener('keydown', this.handleKeyDown);
 
         this.attackScheduled = false;
-        this.scheduleNextAttack();
+        this.scheduleNextAttack(true);
+        this.createAttackFlash();
     }
 
     nextRandomAttackTimer() {
+        return 4000;
         let min = 9000;
         let max = 19000;
         return Math.random() * (max - min) + min;
     }
 
-    async scheduleNextAttack() {
-        console.log('sheduling next attack')
-        console.log(this.attackScheduled)
+    async scheduleNextAttack(playAttackVideo = false) {
         if (this.attackScheduled) {
             console.warn('Attack already scheduled, skipping');
             return;
@@ -45,29 +48,35 @@ export default class EnemyAttackSystem {
         }
 
         await this.systemVideoManager.changeVideo('computerIdle');
-        console.log('video changed to idle')
 
         this.attackTimeoutId = setTimeout(() => {
             this.attackScheduled = false;
-            this.triggerAttack();
+            this.triggerAttack(playAttackVideo);
         }, this.nextRandomAttackTimer());
     }
 
-    async triggerAttack() {
-        await this.systemVideoManager.changeVideo('computerDanger');
-        console.log('loaded danger, start red lights')
+    async triggerAttack(playAttackVideo = false) {
+        if (playAttackVideo) {
+            this.enemyVideoManager.playRandomEnemyAttackVideo(() => {
+                this.handleAttackBoxAndDefendTimer();
+            });
+        } else {
+            this.handleAttackBoxAndDefendTimer();
+        }
+    }
 
+    async handleAttackBoxAndDefendTimer() {
+        await this.systemVideoManager.changeVideo('computerDanger');
         this.canDefend = true;
         this.currentAttackSide = Math.random() < 0.5 ? 'left' : 'right';
 
-        this.attackBox = document.createElement('div');
-        this.attackBox.classList.add('attack-box', this.currentAttackSide);
-        this.overlay.appendChild(this.attackBox);
+        console.log('new att')
+        this.flashAttack(this.currentAttackSide);
 
         this.defendTimeoutId = setTimeout(() => {
             this.resolveAttack(false);
             this.attackScheduled = false; // Just in case
-        }, 3000);
+        }, 2000);
     }
 
     handleKeyDown(event) {
@@ -83,8 +92,7 @@ export default class EnemyAttackSystem {
     }
 
     async resolveAttack(defended) {
-        console.log('resolving')
-        if (!this.attackBox || !this.canDefend) return; // Prevent double call
+        if (!this.canDefend) return; // Prevent double call
         this.canDefend = false;
 
         if (this.defendTimeoutId) {
@@ -92,51 +100,116 @@ export default class EnemyAttackSystem {
             this.defendTimeoutId = null;
         }
 
-        if (!this.attackBox) return;
-
         if (defended) {
-            this.attackBox.classList.add('defended');
+            this.soundSystem.playAttackParried();
             this.scoreModule.add(10);
-            setTimeout(() => {
-                this.attackBox.style.opacity = '0';
-            }, 200)
-            setTimeout(() => this.clearAttackBox(), 1000);
+            this.setAttackBoxDefended();
         } else {
+            this.soundSystem.playPlayerShipExplosion();
+            this.clearAttackTween();
             this.triggerScreenShake();
-            this.scoreModule.add(-10);
-            setTimeout(() => {
-                this.attackBox.style.opacity = '0';
-            }, 200)
-            setTimeout(() => this.clearAttackBox(), 1000);
+            this.scoreModule.add(-30);
+            this.scene.time.delayedCall(800, () => {
+                this.enemyVideoManager.playRandomEnemyMockingVideo();
+            })
         }
 
         this.scheduleNextAttack();
     }
 
-    clearAttackBox() {
-        if (this.attackBox && this.overlay.contains(this.attackBox)) {
-            this.overlay.removeChild(this.attackBox);
-            this.attackBox = null;
-            this.currentAttackSide = null;
+
+    createAttackFlash() {
+        const screenWidth = this.scene.scale.width;
+
+        this.attackFlashLeft = this.scene.add.image(0, 0, 'redAlertLeft').setOrigin(0, 0).setDisplaySize(400, 1080).setDepth(1000).setAlpha(0).setVisible(0);
+        this.attackFlashRight = this.scene.add.image(screenWidth, 0, 'redAlertRight').setOrigin(1, 0).setDisplaySize(400, 1080).setDepth(1000).setAlpha(0).setVisible(0);
+    }
+
+    flashAttack(direction = 'left') {
+        this.target = this.attackFlashLeft;
+        if (direction === 'right') {
+            this.target = this.attackFlashRight;
+        } else {
+            this.target = this.attackFlashLeft;
         }
+
+        this.target.setVisible(true);
+        this.target.setAlpha(1); // start visible for tweening
+        this.target.setTintFill(0xff0000);
+
+        this.currentTweenAttack = this.scene.tweens.add({
+            targets: this.target,
+            scaleX: { from: 0.8, to: 1.3 },
+            alpha: { from: 0.6, to: 1 },
+            duration: 500,
+            yoyo: true,
+            repeat: 4,
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+                this.hideTarget();
+            }
+        });
     }
 
     destroy() {
         window.removeEventListener('keydown', this.handleKeyDown);
         if (this.attackTimeoutId) clearTimeout(this.attackTimeoutId);
         if (this.defendTimeoutId) clearTimeout(this.defendTimeoutId);
-        this.clearAttackBox();
         if (this.overlay.parentNode) this.overlay.parentNode.removeChild(this.overlay);
     }
 
     triggerScreenShake() {
-        const container = document.getElementById('app'); // Or #game-container
-        const flash = document.getElementById('screen-flash');
+        // Create or reuse flash overlay
+        if (!this.redFlashOverlay) {
+            this.redFlashOverlay = this.scene.add.graphics();
+            this.redFlashOverlay.fillStyle(0xff0000, 0.5); // RGBA red
+            this.redFlashOverlay.fillRect(0, 0, this.scene.scale.width, this.scene.scale.height);
+            this.redFlashOverlay.setScrollFactor(0); // Lock to camera
+            this.redFlashOverlay.setDepth(1000); // On top
+        }
 
-        container.classList.add('shake');
-        flash.classList.add('flash');
+        this.redFlashOverlay.setAlpha(0); // reset
+        this.redFlashOverlay.setVisible(true);
 
-        setTimeout(() => container.classList.remove('shake'), 1300);
-        setTimeout(() => flash.classList.remove('flash'), 1300);
+        // Flash tween (simulate CSS animation)
+        this.scene.tweens.killTweensOf(this.redFlashOverlay); // cancel previous
+        this.scene.tweens.add({
+            targets: this.redFlashOverlay,
+            alpha: {from: 1, to: 0.6},
+            duration: 200,
+            yoyo: true,
+            repeat: 1,
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+                this.redFlashOverlay.setVisible(false);
+            }
+        });
+
+        // Shake the camera
+        this.scene.cameras.main.shake(1000, 0.03); // duration in ms, intensity
+    }
+
+    clearAttackTween() {
+        //clear tween if exist
+        if (this.currentTweenAttack) {
+            this.currentTweenAttack.complete();
+            this.hideTarget();
+        }
+    }
+
+    setAttackBoxDefended() {
+        //set target to green
+        this.target.setTintFill(0x00ff00);
+        if (this.currentTweenAttack) {
+            this.currentTweenAttack.stop();
+        }
+        setTimeout(() => {
+            this.clearAttackTween();
+        }, 600)
+    }
+
+    hideTarget() {
+        this.target.setVisible(false);
+        this.target.setAlpha(0);
     }
 }

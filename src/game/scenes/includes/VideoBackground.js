@@ -42,4 +42,6 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
         video.setScale(scale);
         video.setPosition(gridStartX, gridStartY);
     }
+
+    return video;
 }

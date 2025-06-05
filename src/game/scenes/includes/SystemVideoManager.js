@@ -7,12 +7,14 @@ export default class VideoSystemManager {
 
         this.videoMap = {
             computerIdle: this.scene.add.video(x, y, 'computerIdle').setOrigin(0, 0).setDepth(400).setVisible(true),
-            computerDanger: this.scene.add.video(x, y, 'computerDanger').setOrigin(0, 0).setDepth(400).setVisible(true),
+            computerDanger: this.scene.add.video(x, y, 'computerDanger').setOrigin(0, 0).setDepth(400).setVisible(true).setVolume(0.4),
         };
+
+        this.changeVideo('computerIdle');
     }
 
     async changeVideo(key) {
-        if (this.currentVideo) {
+        if (this.currentVideo !== undefined) {
             this.currentVideo.setDepth(300);
             this.currentVideo.stop();
         }

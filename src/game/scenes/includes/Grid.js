@@ -1,6 +1,7 @@
 export class Grid {
-    constructor(scene) {
+    constructor(scene, enemyVideoManager) {
         this.scene = scene;
+        this.enemyVideoManager = enemyVideoManager;
         this.cols = 10;
         this.rows = 10;
         this.gridStartX = 550;
@@ -24,6 +25,8 @@ export class Grid {
         this.cellOverlays = {};
         this.placeShipsRandomly();
         this.initializeShips();
+        this.createGrid();
+        this.animateHighlights();
     }
 
     createGrid() {
@@ -70,19 +73,33 @@ export class Grid {
 
         // Add input listeners to pause/resume tween if needed
         scene.input.keyboard.on('keydown-Q', () => {
-            if (this.rowTween.isPlaying()) this.rowTween.pause();
+            if (!this.qPressed) {
+                this.qPressed = true;
+                if (this.rowTween.isPlaying()) this.rowTween.pause();
+                this.checkForViewfinderAnimation();
+                this.chooseLockSound();
+            }
         });
 
         scene.input.keyboard.on('keyup-Q', () => {
+            this.qPressed = false;
             if (this.rowTween.isPaused()) this.rowTween.resume();
+            this.checkForViewfinderAnimation();
         });
 
         scene.input.keyboard.on('keydown-D', () => {
-            if (this.colTween.isPlaying()) this.colTween.pause();
+            if (!this.dPressed) {
+                this.dPressed = true;
+                if (this.colTween.isPlaying()) this.colTween.pause();
+                this.chooseLockSound();
+                this.checkForViewfinderAnimation();
+            }
         });
 
         scene.input.keyboard.on('keyup-D', () => {
+            this.dPressed = false;
             if (this.colTween.isPaused()) this.colTween.resume();
+            this.checkForViewfinderAnimation();
         });
     }
 
@@ -238,6 +255,9 @@ export class Grid {
             // Check if ship is fully hit (sunk)
             if (ship.hits === ship.cells.length) {
                 this.revealShip(ship);
+                if (!this.areAllShipsSunk()) { //another video will be played for that
+                    this.enemyVideoManager.playRandomEnemyFuriousVideo();
+                }
             }
         } else {
             this.cellStatus[row][col] = 'miss';
@@ -253,9 +273,10 @@ export class Grid {
 
         // After revealing and updating hits:
         if (this.areAllShipsSunk()) {
-            // Optional: add a delay before resetting
-            this.scene.time.delayedCall(1000, () => {
-                this.resetShips();
+            this.enemyVideoManager.playRandomSurrenderVideo(() => {
+                this.pixelatedGridAnimation(() => {
+                    this.resetShips();
+                });
             });
         }
 
@@ -332,6 +353,32 @@ export class Grid {
 
         // Place new ships randomly
         this.placeShipsRandomly();
+    }
+
+
+    pixelatedGridAnimation(onComplete = null) {
+        // Add pixelation post-processing effect to the video
+        const fxPixelated = this.scene.bgVideo.postFX.addPixelate(-1);
+        this.scene.bgVideo.setDepth(500);
+
+// Animate the pixel amount to simulate a ripple/glitch effect
+        this.scene.tweens.addCounter({
+            from: -1,
+            to: 30,
+            duration: 800,
+            yoyo: true,
+            onUpdate: (tween) => {
+                fxPixelated.amount = tween.getValue();
+            },
+            onComplete: () => {
+                // Optional: clear the effect after animation
+                this.scene.bgVideo.postFX.clear();
+                this.scene.bgVideo.setDepth(-11);
+                if (onComplete) {
+                    onComplete();
+                }
+            }
+        });
     }
 
     createHighlights() {
@@ -411,5 +458,26 @@ export class Grid {
             // Emit all at once at coordinates (x, y)
             stonesEmitter.explode(3);
         });
+    }
+
+    checkForViewfinderAnimation() {
+        if (this.qPressed && this.dPressed) {
+            if (this.scene.viewfinder) {
+                this.scene.viewfinder.lockViewfinderAnimation();
+                this.scene.viewfinder.setAccentColorRectangles();
+            }
+        } else {
+            if (this.scene.viewfinder) {
+                this.scene.viewfinder.unlockViewfinderAnimation();
+                this.scene.viewfinder.resetAccentColorRectangles();
+            }
+        }
+    }
+
+    chooseLockSound() {
+        if (this.qPressed && this.dPressed) {
+            return this.scene.soundSystem.playDoubleLock();
+        }
+        return this.scene.soundSystem.playLock();
     }
 }
