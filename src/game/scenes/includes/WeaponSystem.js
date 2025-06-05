@@ -1,6 +1,7 @@
 export class WeaponSystem {
-    constructor(scene, grid) {
+    constructor(scene, grid, soundSystem) {
         this.scene = scene;
+        this.soundSystem = soundSystem;
         this.grid = grid;
         this.currentWeapon = 1;
 
@@ -11,7 +12,6 @@ export class WeaponSystem {
         ['ONE', 'TWO', 'THREE'].forEach((key, i) => {
             this.scene.input.keyboard.on(`keydown-${key}`, () => {
                 this.currentWeapon = i + 1;
-                console.log(`Switched to weapon ${this.currentWeapon}`);
             });
         });
 
@@ -19,6 +19,11 @@ export class WeaponSystem {
     }
 
     fire() {
+        if (!this.grid.qPressed || !this.grid.dPressed) {
+            this.soundSystem.playCantFire();
+            return false;
+        }
+
         const centerX = this.grid.colHighlight.x;
         const centerY = this.grid.rowHighlight.y;
         const spacingX = this.grid.cellWidth;
@@ -126,6 +131,7 @@ export class WeaponSystem {
                 break;
         }
 
+
         targets.forEach(target => {
             const sx = target.startX;
             const sy = target.startY;
@@ -137,6 +143,8 @@ export class WeaponSystem {
     }
 
     fireLaser(startX, startY, targetX, targetY, texture) {
+        this.soundSystem.playLaser1();
+
         const adjustedTargetX = targetX;
         const adjustedTargetY = targetY;
 
@@ -182,6 +190,7 @@ export class WeaponSystem {
                 const hit = this.grid.fireAtCell(targetX, targetY);
                 if (hit) {
                     this.showExplosion(targetX, targetY);
+                    this.soundSystem.playExplosion();
                 }
 
                 this.scene.tweens.add({
