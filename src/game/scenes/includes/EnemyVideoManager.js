@@ -74,8 +74,6 @@ export default class EnemyVideoManager {
     playVideo(video, loop = false, standByOnComplete = true, customCallbackOnComplete = null) {
         //can only play one video at a time (unless it's the standBy video, override)
         if (this.currentVideo !== undefined && this.currentVideo.isPlaying() && this.currentVideo !== this.videosObjects.standBy.enemyStandBy) {
-            console.log('video already playing')
-            console.log(this.currentVideo)
 
             //still run callback, needs a timeout when all ships are sunk call
             if (customCallbackOnComplete) {

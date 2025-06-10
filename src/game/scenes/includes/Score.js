@@ -1,4 +1,6 @@
 // score.js
+import {signalScore} from "../../../signals.js";
+
 export default class Score {
     constructor(scene) {
         this.score = 0;
@@ -21,7 +23,7 @@ export default class Score {
 
         this.score += toAdd;
         this.scoreText.setText(`Score: ${this.score}`);
-
+        signalScore(this.score);
     }
 
     animateLosePoints() {

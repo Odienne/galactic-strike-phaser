@@ -78,14 +78,6 @@ export class Game extends Phaser.Scene {
     }
 
     create() {
-        this.time.addEvent({
-            delay: 1000,
-            loop: true,
-            callback: () => {
-                console.log('FPS:', this.game.loop.actualFps.toFixed(1));
-            }
-        });
-
         addOverlay(this);
 
         this.score = new Score(this);

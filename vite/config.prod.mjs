@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
+import {viteStaticCopy} from "vite-plugin-static-copy";
 
 const phasermsg = () => {
     return {
@@ -10,11 +11,11 @@ const phasermsg = () => {
             const line = "---------------------------------------------------------";
             const msg = `❤️❤️❤️ Tell us about your game! - games@phaser.io ❤️❤️❤️`;
             process.stdout.write(`${line}\n${msg}\n${line}\n`);
-            
+
             process.stdout.write(`✨ Done ✨\n`);
         }
     }
-}   
+}
 
 export default defineConfig({
     base: './',
@@ -42,6 +43,14 @@ export default defineConfig({
         port: 8080
     },
     plugins: [
-        phasermsg()
+        phasermsg(),
+        viteStaticCopy({
+            targets: [
+                {
+                    src: 'weapon-screen',
+                    dest: '' // Copies to the root of `dist/`
+                }
+            ]
+        })
     ]
 });

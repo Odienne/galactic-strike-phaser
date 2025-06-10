@@ -15,6 +15,20 @@
                 window.QtBridge = channel.objects.bridge;
             });
         }
+
+
+        window.sendToQt = (data) => {
+            if (window.QtBridge) {
+                return window.QtBridge.receiveData(JSON.stringify(data));
+            }
+        }
+
+        window.nbPlayers = 2;
+
+        window.setNbPlayers = function (nb) {
+            window.nbPlayers = parseInt(nb);
+            return window.nbPlayers;
+        }
     </script>
 </head>
 

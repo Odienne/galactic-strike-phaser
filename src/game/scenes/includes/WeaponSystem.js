@@ -1,3 +1,5 @@
+import {isWeaponOffCoolDown, updateWeaponCooldown} from '../../../signals.js';
+
 export class WeaponSystem {
     constructor(scene, grid, soundSystem) {
         this.scene = scene;
@@ -6,6 +8,11 @@ export class WeaponSystem {
         this.currentWeapon = 1;
 
         this.setupInput();
+
+        //called by Qt
+        window.setWeapon = (weaponId) => {
+            return this.currentWeapon = weaponId;
+        }
     }
 
     setupInput() {
@@ -19,7 +26,7 @@ export class WeaponSystem {
     }
 
     fire() {
-        if (!this.grid.qPressed || !this.grid.dPressed) {
+        if (!isWeaponOffCoolDown() || ((!this.grid.qPressed || !this.grid.dPressed) && window.nbPlayers !== 2)) {
             this.soundSystem.playCantFire();
             return false;
         }
@@ -140,6 +147,8 @@ export class WeaponSystem {
 
             this.fireLaser(sx, sy, tx, ty, laserTexture);
         });
+
+        updateWeaponCooldown();
     }
 
     fireLaser(startX, startY, targetX, targetY, texture) {
@@ -212,13 +221,13 @@ export class WeaponSystem {
     selectExplosionSprite(x, y) {
         switch (this.currentWeapon) {
             case 1:
-                return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
+                return this.scene.add.sprite(x, y, 'explosion1').setScale(2.3);
             case 2:
-                return this.scene.add.sprite(x, y, 'explosion2').setScale(2.5);
+                return this.scene.add.sprite(x, y, 'explosion2').setScale(2.8);
             case 3:
-                return this.scene.add.sprite(x, y, 'explosion3').setScale(3);
+                return this.scene.add.sprite(x, y, 'explosion3').setScale(3.2);
             default:
-                return this.scene.add.sprite(x, y, 'explosion1').setScale(2);
+                return this.scene.add.sprite(x, y, 'explosion1').setScale(2.3);
         }
     }
 

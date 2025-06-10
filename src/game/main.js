@@ -41,14 +41,7 @@ const config = {
 };
 
 const StartGame = (parent) => {
-
-    const game = new Game({ ...config, parent });
-
-    const gl = game.renderer.gl;
-    const maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-    console.log('Max texture size supported:', maxTexSize);
-
-    return game;
+    return new Game({ ...config, parent });
 }
 
 export default StartGame;

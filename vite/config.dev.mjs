@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import {viteStaticCopy} from "vite-plugin-static-copy";
 
 export default defineConfig({
     base: './',
@@ -13,5 +14,15 @@ export default defineConfig({
     },
     server: {
         port: 8080
-    }
+    },
+    plugins: [
+        viteStaticCopy({
+            targets: [
+                {
+                    src: 'weapon-screen',
+                    dest: '' // Copies to the root of `dist/`
+                }
+            ]
+        })
+    ]
 });

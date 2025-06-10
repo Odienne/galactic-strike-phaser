@@ -28,9 +28,17 @@ export default class EnemyAttackSystem {
     }
 
     nextRandomAttackTimer() {
-        return 4000;
-        let min = 9000;
-        let max = 19000;
+        let min = 12000;
+        let max = 20000;
+
+        if (this.scene.timer.duration < 120) {
+            min = 8000;
+            max = 14000;
+        } else if (this.scene.timer.duration < 60) {
+            min = 6000;
+            max = 10000;
+        }
+
         return Math.random() * (max - min) + min;
     }
 
@@ -70,7 +78,6 @@ export default class EnemyAttackSystem {
         this.canDefend = true;
         this.currentAttackSide = Math.random() < 0.5 ? 'left' : 'right';
 
-        console.log('new att')
         this.flashAttack(this.currentAttackSide);
 
         this.defendTimeoutId = setTimeout(() => {
@@ -139,8 +146,8 @@ export default class EnemyAttackSystem {
 
         this.currentTweenAttack = this.scene.tweens.add({
             targets: this.target,
-            scaleX: { from: 0.8, to: 1.3 },
-            alpha: { from: 0.6, to: 1 },
+            scaleX: {from: 0.8, to: 1.3},
+            alpha: {from: 0.6, to: 1},
             duration: 500,
             yoyo: true,
             repeat: 4,

@@ -1,5 +1,6 @@
 // CountdownTimer.js
 import {GameOver} from "../GameOver.js";
+import {signalTime} from "../../../signals.js";
 
 export default class CountdownTimer {
     constructor(scene) {
@@ -32,6 +33,8 @@ export default class CountdownTimer {
 
             this.transitionToGameOver();
         }
+
+        signalTime(180 - this.duration);
     }
 
     formatTime(seconds) {

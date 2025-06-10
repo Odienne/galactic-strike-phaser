@@ -15,6 +15,14 @@ export class Viewfinder {
         this.highlightAlpha = 0.2;
     }
 
+    hide() {
+        this.viewfinder.setVisible(false);
+    }
+
+    show() {
+        this.viewfinder.setVisible(true);
+    }
+
     createViewfinderSprite() {
         const sprite = this.scene.add.sprite(0, 0, 'viewfinder');
         sprite.setOrigin(0.5);
@@ -144,7 +152,6 @@ export class Viewfinder {
 
     updateViewfinder(x, y) {
         this.viewfinder.setPosition(x, y);
-        this.viewfinder.setVisible(true);
     }
 
     updateHighlightRects(positions) {
@@ -159,7 +166,7 @@ export class Viewfinder {
     }
 
     setAccentColorRectangles() {
-        this.highlightAlpha = 0.5;
+        this.highlightAlpha = 0.4;
     }
 
     resetAccentColorRectangles() {

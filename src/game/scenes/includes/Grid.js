@@ -411,8 +411,7 @@ export class Grid {
     }
 
     createColumnHighlight() {
-
-// Similarly for column highlight (vertical gradient)
+        // Similarly for column highlight (vertical gradient)
         const colWidth = this.cellWidth;
         const colHeight = 1080;
 
@@ -463,11 +462,15 @@ export class Grid {
     checkForViewfinderAnimation() {
         if (this.qPressed && this.dPressed) {
             if (this.scene.viewfinder) {
+                //make it visible
+                this.scene.viewfinder.show();
                 this.scene.viewfinder.lockViewfinderAnimation();
                 this.scene.viewfinder.setAccentColorRectangles();
             }
         } else {
+            //make it invisible
             if (this.scene.viewfinder) {
+                this.scene.viewfinder.hide();
                 this.scene.viewfinder.unlockViewfinderAnimation();
                 this.scene.viewfinder.resetAccentColorRectangles();
             }
