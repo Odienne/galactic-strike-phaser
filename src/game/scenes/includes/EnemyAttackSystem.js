@@ -20,6 +20,21 @@ export default class EnemyAttackSystem {
         this.attackScheduled = false;
         this.scheduleNextAttack(true);
         this.createAttackFlash();
+
+        window.defendLeft = () => {
+            if (!this.canDefend || !this.currentAttackSide) return;
+
+            if (this.currentAttackSide === 'left') {
+                this.resolveAttack(true);
+            }
+        }
+        window.defendRight = () => {
+            if (!this.canDefend || !this.currentAttackSide) return;
+
+            if (this.currentAttackSide === 'right') {
+                this.resolveAttack(true);
+            }
+        }
     }
 
     nextRandomAttackTimer() {
