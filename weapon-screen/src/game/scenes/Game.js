@@ -86,7 +86,7 @@ export class Game extends Phaser.Scene {
                 // Reset blink flag and stop tweens
                 cooldownInfo.text.isBlinking = false;
                 this.tweens.killTweensOf(cooldownInfo.text);
-                cooldownInfo.text.setAlpha(0.4).setScale(0.92);
+                cooldownInfo.text.setAlpha(0.2).setScale(0.92);
             }
             // Now it grows from 0 to fullWidth
             cooldownInfo.rect.width = cooldownInfo.fullWidth * ratio;
