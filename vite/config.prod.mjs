@@ -47,8 +47,8 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: 'weapon-screen',
-                    dest: '' // Copies to the root of `dist/`
+                    src: 'weapon-screen/dist/*',
+                    dest: 'weapon-screen' // Copies to the root of `dist/`
                 }
             ]
         })
