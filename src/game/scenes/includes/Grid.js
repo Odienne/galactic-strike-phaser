@@ -487,11 +487,28 @@ export class Grid {
     }
 
     manageQtEvents() {
-        window.updateKeyColumn = (isPressed) => {
-            this.qPressed = isPressed;
-        };
         window.updateKeyRow = (isPressed) => {
+            this.qPressed = isPressed;
+
+            if (this.qPressed) {
+                if (this.rowTween.isPlaying()) this.rowTween.pause();
+                this.chooseLockSound();
+            } else {
+                if (this.rowTween.isPaused()) this.rowTween.resume();
+            }
+            this.checkForViewfinderAnimation();
+        };
+
+        window.updateKeyColumn = (isPressed) => {
             this.dPressed = isPressed;
+
+            if (this.dPressed) {
+                if (this.colTween.isPlaying()) this.colTween.pause();
+                this.chooseLockSound();
+            } else {
+                if (this.colTween.isPaused()) this.colTween.resume();
+            }
+            this.checkForViewfinderAnimation();
         };
     }
 }
