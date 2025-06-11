@@ -9,6 +9,8 @@ export default class SoundSystem {
         this.attackParried = this.scene.sound.add('attack_parried');
         this.playerShipExplosion = this.scene.sound.add('player_explosion');
         this.laser1 = this.scene.sound.add('laser1');
+        this.laser2 = this.scene.sound.add('laser2');
+        this.laser3 = this.scene.sound.add('laser3');
         this.cantFire = this.scene.sound.add('cantFire');
         this.lock = this.scene.sound.add('lock');
         this.doubleLock = this.scene.sound.add('double_lock');
@@ -55,9 +57,22 @@ export default class SoundSystem {
         this.curtainOpen.play();
     }
 
-    playLaser1() {
-        this.laser1.setVolume(0.3);
-        this.laser1.play();
+    playLaser(weaponId) {
+        switch (weaponId) {
+            case 1:
+                this.laser1.setVolume(0.3);
+                this.laser1.play();
+                break;
+            case 2:
+                this.laser2.setVolume(0.3);
+                this.laser2.play();
+                break;
+            case 3:
+                this.laser3.setVolume(0.3);
+                this.laser3.play();
+                break;
+        }
+
     }
 
     destroy() {

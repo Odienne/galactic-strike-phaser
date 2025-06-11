@@ -9,7 +9,7 @@ import EnemyAttackSystem from "./includes/EnemyAttackSystem.js";
 import VideoSystemManager from "./includes/SystemVideoManager.js";
 import EnemyVideoManager from "./includes/EnemyVideoManager.js";
 import SoundSystem from "./includes/SoundSystem.js";
-import SFX from './includes/sfx.json';
+import Socket from './includes/Socket.js';
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -19,6 +19,7 @@ export class Game extends Phaser.Scene {
     create() {
         addOverlay(this);
 
+        this.socket = new Socket(this);
         this.score = new Score(this);
         this.timer = new CountdownTimer(this)
 

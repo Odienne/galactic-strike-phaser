@@ -76,21 +76,3 @@ window.setLanguage = (lang) => {
     console.log(lang)
     return lang;
 };
-
-window.moveWeaponLeft = () => {
-    if (window.currentWeapon > 1) {
-        window.setWeapon(window.currentWeapon - 1);
-    }
-     else {
-        window.setWeapon(3);
-    }
-}
-
-window.moveWeaponRight = () => {
-    if (window.currentWeapon < 3) {
-        window.setWeapon(window.currentWeapon + 1);
-    }
-    else {
-        window.setWeapon(1);
-    }
-}

@@ -172,7 +172,6 @@ export default class EnemyAttackSystem {
         window.removeEventListener('keydown', this.handleKeyDown);
         if (this.attackTimeoutId) clearTimeout(this.attackTimeoutId);
         if (this.defendTimeoutId) clearTimeout(this.defendTimeoutId);
-        if (this.overlay.parentNode) this.overlay.parentNode.removeChild(this.overlay);
     }
 
     triggerScreenShake() {

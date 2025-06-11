@@ -27,7 +27,7 @@ export class Viewfinder {
         const sprite = this.scene.add.sprite(0, 0, 'viewfinder');
         sprite.setOrigin(0.5);
         sprite.setDepth(100);
-        sprite.setVisible(false);
+        sprite.setVisible(true);
         return sprite;
     }
 

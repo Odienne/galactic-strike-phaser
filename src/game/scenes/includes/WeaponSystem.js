@@ -10,12 +10,15 @@ export class WeaponSystem {
         this.setupInput();
 
         //called by Qt
-        window.setWeapon = (weaponId) => {
-            return this.currentWeapon = weaponId;
-        }
+        window.setWeapon = this.setWeapon;
+
         window.updateKeyFire = () => {
             this.fire();
         };
+    }
+
+    setWeapon(weaponId) {
+        return this.currentWeapon = weaponId;
     }
 
     setupInput() {
@@ -28,8 +31,9 @@ export class WeaponSystem {
         this.scene.input.keyboard.on('keydown-SPACE', () => this.fire());
     }
 
-    fire() {
-        if (!isWeaponOffCoolDown() || ((!this.grid.qPressed || !this.grid.dPressed) && window.nbPlayers !== 2)) {
+    async fire() {
+        const isWeaponOffCoolDown = await this.scene.socket.isWeaponOffCoolDown();
+        if (!isWeaponOffCoolDown || ((!this.grid.qPressed || !this.grid.dPressed) && window.nbPlayers !== 2)) {
             this.soundSystem.playCantFire();
             return false;
         }
@@ -151,11 +155,11 @@ export class WeaponSystem {
             this.fireLaser(sx, sy, tx, ty, laserTexture);
         });
 
-        updateWeaponCooldown();
+        this.scene.socket.updateWeaponCooldown();
     }
 
     fireLaser(startX, startY, targetX, targetY, texture) {
-        this.soundSystem.playLaser1();
+        this.soundSystem.playLaser(this.currentWeapon);
 
         const adjustedTargetX = targetX;
         const adjustedTargetY = targetY;

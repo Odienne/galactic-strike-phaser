@@ -1,8 +1,45 @@
 import WeaponVideoManager from "./includes/WeaponVideoManager.js";
+import Socket from "./includes/Socket.js";
 
 export class Game extends Phaser.Scene {
     constructor() {
         super('Game');
+
+        window.moveWeaponLeft = () => {
+            if (window.currentWeapon > 1) {
+                this.socket.setWeapon(window.currentWeapon - 1)
+            }
+            else {
+                this.socket.setWeapon(3)
+            }
+
+            this.changeWeaponAudio.play();
+            this.setVideo();
+            this.setBackgroundImage();
+            this.setWeaponTitle();
+
+            if (window.currentWeapon === 3 && window.getWeapon(3).cooldown <= 0) {
+                this.supernovaAudio.play();
+            }
+        }
+
+        window.moveWeaponRight = () => {
+            if (window.currentWeapon < 3) {
+                this.socket.setWeapon(window.currentWeapon + 1)
+            }
+            else {
+                this.socket.setWeapon(1)
+            }
+
+            this.changeWeaponAudio.play();
+            this.setVideo();
+            this.setBackgroundImage();
+            this.setWeaponTitle();
+
+            if (window.currentWeapon === 3 && window.getWeapon(3).cooldown <= 0) {
+                this.supernovaAudio.play();
+            }
+        }
     }
 
     preload() {
@@ -16,12 +53,17 @@ export class Game extends Phaser.Scene {
 
         this.load.video('laser3', 'assets/videos/laser3.webm', true);
         this.load.audio('change-weapon', 'assets/sfx/01-change-weapon.mp3');
+        this.load.audio('supernova', 'assets/sfx/02-supernova.mp3');
 
         this.loadFonts();
     }
 
     create() {
+        this.socket = new Socket(this);
+
         this.changeWeaponAudio = this.sound.add('change-weapon');
+        this.supernovaAudio = this.sound.add('supernova');
+
         this.weaponsData = window.getWeaponInfos();
 
         this.weaponVideoManager = new WeaponVideoManager(this);
@@ -104,10 +146,14 @@ export class Game extends Phaser.Scene {
             this.input.keyboard.on(`keydown-${key}`, () => {
                 if (i + 1 !== window.currentWeapon) {
                     this.changeWeaponAudio.play();
-                    window.setWeapon(i + 1);
+                    this.socket.setWeapon(i + 1)
                     this.setVideo();
                     this.setBackgroundImage();
                     this.setWeaponTitle();
+
+                    if (i + 1 === 3) {
+                        this.supernovaAudio.play();
+                    }
                 }
             });
         });

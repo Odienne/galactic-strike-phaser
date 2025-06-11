@@ -1,29 +1,36 @@
 {
-  "laser1": {
+  "bgm": {
     "id": "1",
+    "name": "bgm",
+    "src": "assets/bgm/01-bgm.mp3",
+    "description":  "BGM music",
+    "object":  null
+  },
+  "laser1": {
+    "id": "2",
     "name": "laser1",
-    "src": "assets/sfx/01-laser1.mp3",
-    "description": "Played when player presses the fire button",
+    "src": "assets/sfx/02-laser1.mp3",
+    "description": "Played when player presses the fire button (weapon 1)",
     "object": null
   },
-  "laser-hit": {
-    "id": "2",
-    "name": "laser_hit",
-    "src": "assets/sfx/02-laser_hit.mp3",
-    "description":  "Played when laser hits something",
-    "object":  null
-  },
-  "laser-miss": {
+  "laser2": {
     "id": "3",
-    "name": "laser_miss",
-    "src": "assets/sfx/03-laser_miss.mp3",
-    "description":  "Played when laser misses",
-    "object":  null
+    "name": "laser2",
+    "src": "assets/sfx/03-laser2.mp3",
+    "description": "Played when player presses the fire button (weapon 2)",
+    "object": null
+  },
+  "laser3": {
+    "id": "4",
+    "name": "laser3",
+    "src": "assets/sfx/04-laser3.mp3",
+    "description": "Played when player presses the fire button (weapon 3)",
+    "object": null
   },
   "ship-explosion": {
-    "id": "4",
+    "id": "5",
     "name": "ship_explosion",
-    "src": "assets/sfx/04-ship_explosion.mp3",
+    "src": "assets/sfx/05-ship_explosion.mp3",
     "description":  "Played when ship is sunk",
     "object":  null
   },
@@ -35,23 +42,16 @@
     "object":  null
   },
   "curtain-open": {
-    "id": "6",
+    "id": "7",
     "name": "curtain_open",
-    "src": "assets/sfx/08-curtain_open.mp3",
+    "src": "assets/sfx/07-curtain_open.mp3",
     "description":  "Played when player is hit",
     "object":  null
   },
-  "bgm": {
-    "id": "5",
-    "name": "bgm",
-    "src": "assets/bgm/11-bgm.mp3",
-    "description":  "BGM music",
-    "object":  null
-  },
   "attack-parried": {
-    "id": "7",
+    "id": "8",
     "name": "attack_parried",
-    "src": "assets/sfx/07-attack_parried.mp3",
+    "src": "assets/sfx/08-attack_parried.mp3",
     "description":  "Played when player parry an attack",
     "object":  null
   },
