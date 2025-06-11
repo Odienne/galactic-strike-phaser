@@ -6,16 +6,5 @@ export function addOverlay(scene) {
     const scaleX = scene.scale.width / uiOverlay.width;
     uiOverlay.setScale(scaleX);
 
-    addUiElements(scene);
-
     return uiOverlay;
-}
-
-
-function addUiElements() {
-    //adds a div#screen-flash
-    const screenFlash = document.createElement('div');
-    screenFlash.id = 'screen-flash';
-    document.body.appendChild(screenFlash);
-
 }

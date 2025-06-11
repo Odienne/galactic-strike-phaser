@@ -6,11 +6,6 @@ export default class EnemyAttackSystem {
         this.enemyVideoManager = enemyVideoManager;
         this.soundSystem = soundSystem;
 
-        // Create overlay div
-        this.overlay = document.createElement('div');
-        this.overlay.id = 'enemy-attack-overlay';
-        document.body.appendChild(this.overlay);
-
         this.attackBox = null;
         this.currentAttackSide = null;
         this.attackTimeoutId = null;
