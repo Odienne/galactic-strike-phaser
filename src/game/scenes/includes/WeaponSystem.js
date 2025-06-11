@@ -13,6 +13,9 @@ export class WeaponSystem {
         window.setWeapon = (weaponId) => {
             return this.currentWeapon = weaponId;
         }
+        window.updateKeyFire = () => {
+            this.fire();
+        };
     }
 
     setupInput() {

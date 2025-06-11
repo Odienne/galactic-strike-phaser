@@ -1,4 +1,4 @@
-const weapons = {
+let weapons = {
     1: {
         name: 'LASER V1',
         fillColor: "0xff0000",
@@ -24,8 +24,8 @@ const weapons = {
 
 window.currentWeapon = 1;
 
-window.updateWeaponCooldown = () => {
-    switch (window.currentWeapon) {
+window.updateWeaponCooldown = (weaponId) => {
+    switch (parseInt(weaponId)) {
         case 1:
             weapons[1].cooldown = weapons[1].baseCooldown;
             weapons[1].lastUsed = Date.now();
@@ -37,6 +37,20 @@ window.updateWeaponCooldown = () => {
         case 3:
             weapons[3].cooldown = weapons[3].baseCooldown;
             weapons[3].lastUsed = Date.now();
+            break;
+    }
+};
+
+window.resetWeaponCooldown = (weaponId) => {
+    switch (parseInt(weaponId)) {
+        case 1:
+            weapons[1].cooldown = 0;
+            break;
+        case 2:
+            weapons[2].cooldown = 0;
+            break;
+        case 3:
+            weapons[3].cooldown = 0;
             break;
     }
 };
@@ -53,3 +67,6 @@ window.isWeaponOffCoolDown = (weaponId) => {
 }
 
 window.getWeaponInfos = () => weapons;
+window.getWeapon = (weaponId) => {
+    return weapons[weaponId];
+};

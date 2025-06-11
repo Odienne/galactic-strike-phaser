@@ -27,6 +27,8 @@ export class Grid {
         this.initializeShips();
         this.createGrid();
         this.animateHighlights();
+
+        this.manageQtEvents();
     }
 
     createGrid() {
@@ -482,5 +484,14 @@ export class Grid {
             return this.scene.soundSystem.playDoubleLock();
         }
         return this.scene.soundSystem.playLock();
+    }
+
+    manageQtEvents() {
+        window.updateKeyColumn = (isPressed) => {
+            this.qPressed = isPressed;
+        };
+        window.updateKeyRow = (isPressed) => {
+            this.dPressed = isPressed;
+        };
     }
 }

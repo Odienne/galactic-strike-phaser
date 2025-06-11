@@ -45,8 +45,9 @@ export class Game extends Phaser.Scene {
 
     update(time, delta) {
         Object.keys(this.cooldownRects).forEach((key) => {
-            const weapon = this.weaponsData[key];
             const cooldownInfo = this.cooldownRects[key];
+            const weaponId = cooldownInfo.weaponId;
+            const weapon = window.getWeapon(weaponId);
 
             const elapsed = Date.now() - weapon.lastUsed;
             const ratio = Phaser.Math.Clamp(elapsed / weapon.cooldown, 0, 1);
@@ -78,6 +79,8 @@ export class Game extends Phaser.Scene {
                             cooldownInfo.text.setScale(1);
                         }
                     });
+
+                    window.resetWeaponCooldown(weaponId);
                 }
             } else {
                 // Reset blink flag and stop tweens
@@ -110,7 +113,9 @@ export class Game extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown-SPACE', () => {
-            window.updateWeaponCooldown();
+            if (window.isWeaponOffCoolDown(window.currentWeapon)) {
+                window.updateWeaponCooldown(window.currentWeapon);
+            }
         });
     }
 
@@ -184,7 +189,8 @@ export class Game extends Phaser.Scene {
                 rect: fillRect,
                 bgRect: bgRectangle,
                 fullWidth: rectWidth,
-                cooldown: weapon.cooldown
+                cooldown: weapon.cooldown,
+                weaponId: key
             };
 
             // Centered text
