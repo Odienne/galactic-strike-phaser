@@ -70,3 +70,9 @@ window.getWeaponInfos = () => weapons;
 window.getWeapon = (weaponId) => {
     return weapons[weaponId];
 };
+
+
+window.setLanguage = (lang) => {
+    console.log(lang)
+    return lang;
+};

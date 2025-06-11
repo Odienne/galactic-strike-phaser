@@ -12,3 +12,8 @@ export const signalScore = (score) => {
 export const signalTime = (time) => {
     return window.sendToQt({time});
 }
+
+window.setLanguage = (lang) => {
+    console.log(lang)
+    return lang;
+};
