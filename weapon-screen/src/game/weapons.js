@@ -53,12 +53,22 @@ window.resetWeaponCooldown = (weaponId) => {
             weapons[3].cooldown = 0;
             break;
     }
+
+    //signal to Qt only if it's the current weapon
+    if (parseInt(weaponId) === window.currentWeapon) {
+        signalCurrentWeaponOffCooldown(true);
+    }
 };
+
+function signalCurrentWeaponOffCooldown(isOffCd) {
+    window.sendToQt(JSON.stringify({weaponOffCooldown: isOffCd}));
+}
 
 window.setWeapon = (weaponId) => {
     window.currentWeapon = weaponId;
 
     window.sendToQt(JSON.stringify({weaponId}));
+    signalCurrentWeaponOffCooldown(window.isWeaponOffCoolDown(weaponId));
 }
 
 //called by Qt

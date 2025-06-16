@@ -1,3 +1,5 @@
+import {signalAttack, signalAttackEnded} from "./signals.js";
+
 export default class EnemyAttackSystem {
     constructor(scene, scoreModule, systemVideoManager, enemyVideoManager, soundSystem) {
         this.scene = scene;
@@ -88,6 +90,7 @@ export default class EnemyAttackSystem {
         this.canDefend = true;
         this.currentAttackSide = Math.random() < 0.5 ? 'left' : 'right';
 
+        signalAttack(this.currentAttackSide);
         this.flashAttack(this.currentAttackSide);
 
         this.defendTimeoutId = setTimeout(() => {
@@ -131,6 +134,7 @@ export default class EnemyAttackSystem {
             })
         }
 
+        signalAttackEnded();
         this.scheduleNextAttack();
     }
 

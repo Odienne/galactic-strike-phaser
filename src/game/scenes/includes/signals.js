@@ -13,6 +13,20 @@ const signalTime = (time) => {
 }
 
 /**
+ * Signals to Qt app that an attack is on its way
+ */
+const signalAttack = (attack) => {
+    sendToQt({attack})
+}
+
+/**
+ * Signals to Qt app that there's no longer any attack
+ */
+const signalAttackEnded = () => {
+    sendToQt({attack: false})
+}
+
+/**
  * Signals to Qt app to play a sound
  * @param id
  */
@@ -38,4 +52,4 @@ function sendToQt(data) {
     }
 }
 
-export {signalScore, signalTime, signalPlaySound, signalNewGrid};
+export {signalScore, signalTime, signalPlaySound, signalNewGrid, signalAttack, signalAttackEnded};

@@ -41,7 +41,9 @@ export default class Socket {
 
             switch (msg.payload.func) {
                 case 'setWeapon':
-                    result = await this.scene.weaponSystem.setWeapon(msg.payload.weaponId);
+                    if (this.scene.weaponSystem) {
+                        result = await this.scene.weaponSystem.setWeapon(msg.payload.weaponId);
+                    }
                     break;
             }
 
@@ -83,6 +85,18 @@ export default class Socket {
             from: this.clientId,
             to: 'Weapon Screen',
             payload: {func: 'updateWeaponCooldown'},
+            requestId
+        }));
+    }
+
+    transitionToGameOver() {
+        const requestId = crypto.randomUUID();
+
+        this.socket.send(JSON.stringify({
+            type: 'request',
+            from: this.clientId,
+            to: 'Weapon Screen',
+            payload: {func: 'transitionToGameOver'},
             requestId
         }));
     }

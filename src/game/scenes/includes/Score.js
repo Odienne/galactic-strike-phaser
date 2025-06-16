@@ -6,7 +6,7 @@ export default class Score {
         this.score = 0;
         this.scene = scene;
 
-        this.scoreText = this.scene.add.text(200, 720, `SCORE: ${this.score}`, {
+        this.scoreText = this.scene.add.text(200, 720, this.scene.translator.translate('score') + this.score, {
             fontSize: '52px',
             color: '#ffffff',
             fontFamily: 'American Captain', //american captain
@@ -22,7 +22,7 @@ export default class Score {
         }
 
         this.score += toAdd;
-        this.scoreText.setText(`Score: ${this.score}`);
+        this.scoreText.setText(this.scene.translator.translate('score') + this.score);
         signalScore(this.score);
     }
 
@@ -43,6 +43,7 @@ export default class Score {
             }
         });
     }
+
     animateGainPoints() {
         // Flash and glow simulation
         this.setGreenGlow(true);

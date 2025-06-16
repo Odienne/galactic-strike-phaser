@@ -8,8 +8,7 @@ export class Game extends Phaser.Scene {
         window.moveWeaponLeft = () => {
             if (window.currentWeapon > 1) {
                 this.socket.setWeapon(window.currentWeapon - 1)
-            }
-            else {
+            } else {
                 this.socket.setWeapon(3)
             }
 
@@ -26,8 +25,7 @@ export class Game extends Phaser.Scene {
         window.moveWeaponRight = () => {
             if (window.currentWeapon < 3) {
                 this.socket.setWeapon(window.currentWeapon + 1)
-            }
-            else {
+            } else {
                 this.socket.setWeapon(1)
             }
 
@@ -40,6 +38,8 @@ export class Game extends Phaser.Scene {
                 this.supernovaAudio.play();
             }
         }
+
+        window.transitionToGameOver = () => this.transitionToGameOver();
     }
 
     preload() {
@@ -123,6 +123,7 @@ export class Game extends Phaser.Scene {
                     });
 
                     window.resetWeaponCooldown(weaponId);
+
                 }
             } else {
                 // Reset blink flag and stop tweens
@@ -151,7 +152,8 @@ export class Game extends Phaser.Scene {
                     this.setBackgroundImage();
                     this.setWeaponTitle();
 
-                    if (i + 1 === 3) {
+
+                    if (i + 1 === 3 && window.getWeapon(3).cooldown <= 0) {
                         this.supernovaAudio.play();
                     }
                 }
@@ -253,6 +255,20 @@ export class Game extends Phaser.Scene {
                 .setOrigin(0.5, 0.5)
                 .setDepth(1000);
         });
+    }
+
+    transitionToGameOver() {
+        // FX
+        const pixelated = this.cameras.main.postFX.addPixelate(-1);
+        this.add.tween({
+            targets: pixelated,
+            duration: 700,
+            amount: 40,
+            onComplete: () => {
+                this.cameras.main.fadeOut(100);
+                this.scene.start('GameOver');
+            }
+        })
     }
 
 }

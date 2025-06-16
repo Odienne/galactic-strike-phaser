@@ -7,7 +7,7 @@ export default class CountdownTimer {
         this.scene = scene;
         this.duration = 180;
 
-        this.text = scene.add.text(146, 22, "Temps restant : " + this.formatTime(this.duration), {
+        this.text = scene.add.text(146, 22, this.scene.translator.translate('time_remaining') + this.formatTime(this.duration), {
             fontSize: '22px',
             fontWeight: 'bold',
             letterSpacing: 3,
@@ -26,7 +26,7 @@ export default class CountdownTimer {
     tick() {
         this.duration--;
 
-        this.text.setText("Temps restant : " + this.formatTime(this.duration));
+        this.text.setText(this.scene.translator.translate('time_remaining') + this.formatTime(this.duration));
 
         if (this.duration <= 0) {
             this.timerEvent.remove();
@@ -56,9 +56,10 @@ export default class CountdownTimer {
             duration: 700,
             amount: 40,
             onComplete: () => {
+                this.scene.socket.transitionToGameOver();
                 this.scene.cameras.main.fadeOut(100);
                 this.scene.enemyAttackSystem.destroy();
-                this.scene.scene.start('GameOver');
+                this.scene.scene.start('GameOver', {translator: this.scene.translator});
             }
         })
     }

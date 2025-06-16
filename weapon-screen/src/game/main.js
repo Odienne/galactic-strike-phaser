@@ -1,5 +1,6 @@
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
+import { GameOver } from './scenes/GameOver';
 import { Preloader } from './scenes/Preloader';
 import { AUTO, Game } from 'phaser';
 
@@ -22,6 +23,7 @@ const config = {
         Boot,
         Preloader,
         MainGame,
+        GameOver,
     ],
     fps: {
         target: 60,

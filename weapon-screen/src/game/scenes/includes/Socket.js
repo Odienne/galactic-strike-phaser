@@ -37,6 +37,9 @@ export default class Socket {
                 case 'updateWeaponCooldown':
                     result = await this.updateWeaponCooldown();
                     break;
+                case 'transitionToGameOver':
+                    result = await this.transitionToGameOver();
+                    break;
             }
 
             // Send the result back
@@ -73,5 +76,9 @@ export default class Socket {
             payload: {func: 'setWeapon', weaponId},
             requestId
         }));
+    }
+
+    transitionToGameOver() {
+        window.transitionToGameOver();
     }
 }

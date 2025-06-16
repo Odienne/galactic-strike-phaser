@@ -10,10 +10,13 @@ import VideoSystemManager from "./includes/SystemVideoManager.js";
 import EnemyVideoManager from "./includes/EnemyVideoManager.js";
 import SoundSystem from "./includes/SoundSystem.js";
 import Socket from './includes/Socket.js';
+import Translator from "./includes/Translator.js";
 
 export class Game extends Phaser.Scene {
     constructor() {
         super('Game');
+
+        this.translator = new Translator('en');
     }
 
     create() {
