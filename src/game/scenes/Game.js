@@ -106,7 +106,7 @@ export class Game extends Phaser.Scene {
         //place the bottom and top curtains
         this.topCurtain = this.add.image(550, 0, 'top-curtain')
             .setDepth(200) // on top of viewfinder
-            .setOrigin(0, 0);   // anchor top center
+            .setOrigin(0, 0); // anchor top center
         this.topCurtain.setDisplaySize(this.grid.gridWidth, 1080 / 2);
 
         this.bottomCurtain = this.add.image(550, 1080 / 2, 'bottom-curtain')

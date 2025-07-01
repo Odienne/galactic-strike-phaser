@@ -20,7 +20,7 @@ export default class SoundSystem {
 
 
     playBgm() {
-        this.shipExplosion.setVolume(1);
+        this.shipExplosion.setVolume(0.5);
         this.bgm.play();
     }
 
