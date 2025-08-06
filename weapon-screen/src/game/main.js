@@ -26,9 +26,10 @@ const config = {
         GameOver,
     ],
     fps: {
-        target: 60,
+        target: 30,
         forceSetTimeOut: true  // Use setTimeout instead of requestAnimationFrame (important for strict limiting)
     },
+    disableVisibilityChange: true,
     render: {
         antialias: true,
         roundPixels: false,
