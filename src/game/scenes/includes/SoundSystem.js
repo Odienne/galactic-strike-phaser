@@ -16,16 +16,22 @@ export default class SoundSystem {
         this.doubleLock = this.scene.sound.add('double_lock');
 
         this.playBgm();
+
+        this.scene.input.once('pointerdown', () => {
+            if (this.scene.sound.context.state === 'suspended') {
+                this.scene.sound.context.resume();
+            }
+        });
     }
 
 
     playBgm() {
-        this.shipExplosion.setVolume(0.5);
+        this.bgm.setVolume(0.3);
         this.bgm.play();
     }
 
     playExplosion() {
-        this.shipExplosion.setVolume(0.3);
+        this.shipExplosion.setVolume(0.5);
         this.shipExplosion.play();
     }
 
@@ -49,7 +55,7 @@ export default class SoundSystem {
     }
 
     playPlayerShipExplosion() {
-        this.playerShipExplosion.setVolume(0.4);
+        this.playerShipExplosion.setVolume(0.5);
         this.playerShipExplosion.play();
     }
     playCurtainOpen() {
@@ -60,15 +66,15 @@ export default class SoundSystem {
     playLaser(weaponId) {
         switch (weaponId) {
             case 1:
-                this.laser1.setVolume(0.3);
+                this.laser1.setVolume(0.4);
                 this.laser1.play();
                 break;
             case 2:
-                this.laser2.setVolume(0.3);
+                this.laser2.setVolume(0.4);
                 this.laser2.play();
                 break;
             case 3:
-                this.laser3.setVolume(0.3);
+                this.laser3.setVolume(0.4);
                 this.laser3.play();
                 break;
         }
