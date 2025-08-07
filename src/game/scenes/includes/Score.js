@@ -22,6 +22,8 @@ export default class Score {
         }
 
         this.score += toAdd;
+        if (this.score < 0) this.score = 0;
+
         this.scoreText.setText(this.scene.translator.translate('score') + this.score);
         signalScore(this.score);
     }
