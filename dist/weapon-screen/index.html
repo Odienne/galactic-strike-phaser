@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./fonts.css">
+    <title>Galactic strike Weapon screen</title>
+
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script>
+        if (typeof qt !== 'undefined' && typeof QWebChannel !== 'undefined') {
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                window.QtBridge = channel.objects.bridge;
+            });
+        }
+
+        window.sendToQt = (data) => {
+            if (window.QtBridge) {
+                return window.QtBridge.receiveData(JSON.stringify(data));
+            }
+        }
+    </script>
+  <script type="module" crossorigin src="./assets/index-7SZsoQ9I.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/phaser-y5S3hZEA.js">
+</head>
+
+<body>
+<div id="app">
+    <div id="game-container"></div>
+</div>
+
+
+</body>
+</html>
