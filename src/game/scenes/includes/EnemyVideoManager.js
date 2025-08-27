@@ -89,9 +89,28 @@ export default class EnemyVideoManager {
             this.currentVideo.stop();
         }
 
+            const isStandBy = (video === this.videosObjects.standBy.enemyStandBy);
+
+
+
         // Try to play video (catch silently if autoplay fails)
         try {
+            
             this.currentVideo = video;
+
+            console.log(video, isStandBy);
+            
+            if (isStandBy) {
+                video.setVisible(true);
+                video.play(loop);
+                video.setDepth(500);
+                
+                setTimeout(() => {
+                    video.stop()
+                }, 100); 
+                return;
+            }
+            
             video.setVisible(true);
             video.play(loop);
             video.setDepth(500);

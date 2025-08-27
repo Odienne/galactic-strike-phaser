@@ -13,25 +13,17 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
         console.warn('Video failed to load, using fallback image.');
     });
 
-    nativeVideo.addEventListener('loadedmetadata', () => {
-        resizeVideo();
-        fallbackImage.setVisible(false); // Hide fallback once video is ready
-    });
-
-    // Handle case where video is already loaded
-    if (nativeVideo.readyState >= 2) {
-        resizeVideo();
-        fallbackImage.setVisible(false);
-    }
-
     // Try to play video (catch silently if autoplay fails)
     try {
-        video.play(true)
+        video.play(true);
+        video.once('play', resizeVideo);
     } catch (e) {
         console.warn('Autoplay failed:', e);
     }
 
     function resizeVideo() {
+        fallbackImage.setVisible(false);
+        
         const videoWidth = nativeVideo.videoWidth;
         const videoHeight = nativeVideo.videoHeight;
 
@@ -41,6 +33,7 @@ export function addVideoBackground(scene, gridStartX, gridStartY, gridWidth, gri
 
         video.setScale(scale);
         video.setPosition(gridStartX, gridStartY);
+        video.stop();
     }
 
     return video;
