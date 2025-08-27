@@ -195,7 +195,6 @@ export class WeaponSystem {
         const angle = Phaser.Math.Angle.Between(startX, startY, targetX, targetY);
         laser.rotation = angle + Math.PI / 2;
 
-
         this.scene.tweens.add({
             targets: laser,
             x: adjustedTargetX,
